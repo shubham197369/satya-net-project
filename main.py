@@ -4,11 +4,10 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import chromadb
-from sentence_transformers import SentenceTransformer
 import os
 import shutil
 import json
-import torch
+import cv2
 
 # --- NEW IMPORTS FOR .ENV & GEMINI API ---
 from dotenv import load_dotenv
@@ -36,10 +35,6 @@ def get_ai_help(error_message: str):
     except Exception as e:
         return f"AI se connect karne mein samasya aayi: {e}"
 
-# --- IMPORTS FOR IMAGE & AUDIO DEEPFAKE DETECTION ---
-import cv2
-from transformers import pipeline
-
 app = FastAPI(title="Satya-Net Multimodal RAG Engine", version="5.0", default_response_class=ORJSONResponse)
 
 app.add_middleware(
@@ -65,13 +60,14 @@ users_db = {}
 history_db = []
 feedback_db = []
 
-# --- LAZY LOADER FOR EMBEDDING MODEL (Saves RAM on Render Startup) ---
+# --- TRUE LAZY LOADER FOR EMBEDDING MODEL ---
 _embedding_model = None
 
 def get_embedding_model():
     global _embedding_model
     if _embedding_model is None:
-        print("Loading Embedding Model (Lazy)...")
+        print("Loading Embedding Model (True Lazy)...")
+        from sentence_transformers import SentenceTransformer
         _embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
     return _embedding_model
 
@@ -104,7 +100,7 @@ def analyze_image_visually(image_path):
     else:
         return "No obvious visual anomalies detected by basic analysis."
 
-# --- LAZY LOADERS FOR HEAVY DEEPFAKE MODELS (Saves RAM on Render) ---
+# --- TRUE LAZY LOADERS FOR DEEPFAKE MODELS ---
 _deepfake_detector = None
 _audio_detector = None
 
@@ -112,7 +108,8 @@ def get_deepfake_detector():
     global _deepfake_detector
     if _deepfake_detector is None:
         try:
-            print("Loading Pre-trained Image Deepfake Model (Lazy)...")
+            print("Loading Pre-trained Image Deepfake Model (True Lazy)...")
+            from transformers import pipeline
             _deepfake_detector = pipeline("image-classification", model="dima806/deepfake_vs_real_image_detection")
         except Exception as e:
             print(f"Error loading Image Deepfake Model: {e}")
@@ -122,7 +119,8 @@ def get_audio_detector():
     global _audio_detector
     if _audio_detector is None:
         try:
-            print("Loading Pre-trained Audio Deepfake Model (Lazy)...")
+            print("Loading Pre-trained Audio Deepfake Model (True Lazy)...")
+            from transformers import pipeline
             _audio_detector = pipeline("audio-classification", model="MelodyMachine/Deepfake-audio-detection")
         except Exception as e:
             print(f"Error loading Audio Deepfake Model: {e}")
