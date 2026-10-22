@@ -50,9 +50,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-print("Loading Embedding Model...")
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
-
 chroma_client = chromadb.Client()
 collection = chroma_client.get_or_create_collection(name="fact_knowledge_base")
 
@@ -68,14 +65,25 @@ users_db = {}
 history_db = []
 feedback_db = []
 
+# --- LAZY LOADER FOR EMBEDDING MODEL (Saves RAM on Render Startup) ---
+_embedding_model = None
+
+def get_embedding_model():
+    global _embedding_model
+    if _embedding_model is None:
+        print("Loading Embedding Model (Lazy)...")
+        _embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+    return _embedding_model
+
 def load_facts_automatically():
     file_path = "facts.txt"
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as f:
             lines = [line.strip() for line in f.readlines() if line.strip()]
             
+        model = get_embedding_model()
         for i, fact in enumerate(lines):
-            embedding = embedding_model.encode(fact).tolist()
+            embedding = model.encode(fact).tolist()
             try:
                 collection.add(documents=[fact], embeddings=[embedding], ids=[str(i)])
             except Exception:
