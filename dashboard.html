@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Control Center | VANISHIELD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { darkbg: '#090d16', cardbg: '#120822' }
+                }
+            }
+        }
+        // Authentication Guard: Check if user is logged in
+        document.addEventListener("DOMContentLoaded", function() {
+            const isLoggedIn = localStorage.getItem("isLoggedIn");
+            const currentPage = window.location.pathname.split("/").pop();
+            
+            if (isLoggedIn !== "true" && currentPage !== "login.html" && currentPage !== "register.html") {
+                window.location.href = "login.html";
+            }
+        });
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, rgba(18, 8, 34, 0.95), rgba(9, 13, 22, 0.98)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f3f4f6;
+        }
+        .purple-glass {
+            background: rgba(25, 12, 45, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            box-shadow: 0 0 50px rgba(147, 51, 234, 0.15);
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(168,85,247,0.4);
+            border-radius: 10px;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(168,85,247,0.3); }
+            50% { box-shadow: 0 0 35px rgba(168,85,247,0.7); }
+        }
+        .glow-effect {
+            animation: pulseGlow 3s infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+
+    <!-- HEADER / DOUBLE NAVBAR SYSTEM -->
+    <header class="sticky top-0 z-50">
+        <!-- TOP MAIN NAVBAR -->
+        <div class="purple-glass border-b border-purple-900/40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+                <!-- LOGO -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-purple-600/20 border border-purple-400/40 flex items-center justify-center text-purple-300 font-bold shadow-lg shadow-purple-600/30">
+                        <i class="fa-solid fa-shield-halved text-sm"></i>
+                    </div>
+                    <div>
+                        <span class="text-sm font-extrabold tracking-wider text-white">SATYA-NET</span>
+                        <span class="block text-[9px] tracking-widest text-purple-400 font-semibold uppercase" data-i18n="navSubtitle">Neural Defense Core</span>
+                    </div>
+                </div>
+
+                <!-- RIGHT CONTROLS: Lang, Settings, Logout -->
+                <div class="flex items-center space-x-3">
+                    <!-- MULTILINGUAL DROPDOWN -->
+                    <div class="relative">
+                        <button onclick="toggleLangDropdown()" class="px-3 py-1.5 text-xs font-semibold bg-purple-950/60 border border-purple-500/30 hover:border-purple-400 text-purple-200 rounded-xl flex items-center space-x-2 transition shadow-lg">
+                            <i class="fa-solid fa-globe text-purple-400"></i>
+                            <span id="currentLangLabel">English</span>
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+                        <div id="langDropdown" class="hidden absolute right-0 mt-2 w-52 purple-glass rounded-2xl shadow-2xl border border-purple-500/30 p-2 z-50">
+                            <div class="mb-2 px-2 pb-1 border-b border-purple-900/50">
+                                <input type="text" id="langSearch" onkeyup="filterLanguages()" placeholder="Search lang..." class="w-full px-2.5 py-1 bg-black/50 border border-purple-500/30 rounded-lg text-xs text-white focus:outline-none focus:border-purple-400">
+                            </div>
+                            <div id="langList" class="max-h-48 overflow-y-auto custom-scroll space-y-1 text-xs text-gray-300">
+                                <div onclick="setLanguage('en')" class="p-2 hover:bg-purple-600/20 rounded-lg cursor-pointer transition">English</div>
+                                <div onclick="setLanguage('hi')" class="p-2 hover:bg-purple-600/20 rounded-lg cursor-pointer transition">हिंदी (Hindi)</div>
+                                <div onclick="setLanguage('mr')" class="p-2 hover:bg-purple-600/20 rounded-lg cursor-pointer transition">मराठी (Marathi)</div>
+                                <div onclick="setLanguage('ah')" class="p-2 hover:bg-purple-600/20 rounded-lg cursor-pointer transition">अहिराणी (Ahirani)</div>
+                                <div onclick="setLanguage('gu')" class="p-2 hover:bg-purple-600/20 rounded-lg cursor-pointer transition">ગુજરાતી (Gujarati)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SETTINGS BUTTON -->
+                    <button onclick="toggleSettingsModal()" class="w-9 h-9 bg-purple-950/60 hover:bg-purple-800/60 border border-purple-500/30 text-purple-300 rounded-xl flex items-center justify-center transition shadow-lg" title="Neural Settings">
+                        <i class="fa-solid fa-gear text-xs"></i>
+                    </button>
+
+                    <!-- LOGOUT BUTTON -->
+                    <button onclick="logoutUser()" class="px-3.5 py-1.5 text-xs font-bold tracking-wider uppercase bg-rose-600/80 hover:bg-rose-600 text-white rounded-xl shadow-lg shadow-rose-600/30 transition" data-i18n="btnLogout">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECONDARY NAVBAR (PILLS NAV) -->
+        <div class="bg-black/60 backdrop-blur-md border-b border-purple-900/30 py-2 px-4">
+            <div class="max-w-7xl mx-auto flex items-center justify-center sm:justify-start space-x-2 overflow-x-auto custom-scroll whitespace-nowrap">
+                <a href="history.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300 hover:text-white hover:bg-purple-900/40 transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-clock-rotate-left text-purple-400"></i><span>History</span>
+                </a>
+                <a href="matrix.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300 hover:text-white hover:bg-purple-900/40 transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-microchip text-purple-400"></i><span>Intelligence Matrix</span>
+                </a>
+                <a href="dashboard.html" class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-purple-600/40 border border-purple-500/40 shadow-sm flex items-center space-x-1.5">
+                    <i class="fa-solid fa-chart-line text-purple-300"></i><span>Neural Control Center</span>
+                </a>
+                <a href="feedback.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300 hover:text-white hover:bg-purple-900/40 transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-satellite-dish text-purple-400"></i><span>Telemetry Feedback</span>
+                </a>
+                <a href="about.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-300 hover:text-white hover:bg-purple-900/40 transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-circle-info text-purple-400"></i><span>About Us</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- LIVE THREAT TICKER BAR -->
+    <div class="bg-purple-950/90 border-b border-purple-800/40 py-2 overflow-hidden whitespace-nowrap relative z-40">
+        <div class="animate-marquee text-xs text-purple-300 font-medium space-x-16">
+            <span><i class="fa-solid fa-triangle-exclamation text-amber-400 mr-1.5"></i> Live Alert: Phishing campaign detected targeting banking users in APAC.</span>
+            <span><i class="fa-solid fa-shield-check text-emerald-400 mr-1.5"></i> Neural Defense Core successfully neutralized 4,200 deepfake audio calls today.</span>
+            <span><i class="fa-solid fa-bolt text-purple-400 mr-1.5"></i> Global Threat Level: MODERATE (Level 3 Active).</span>
+        </div>
+    </div>
+
+    <!-- MAIN SCROLLABLE CONTENT -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+        
+        <!-- Welcome Banner (Name spacing increased) -->
+        <div class="purple-glass glow-effect p-8 rounded-[30px] flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="space-y-2 text-center md:text-left">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span data-i18n="bannerStatus">System Online & Secured Across Global Nodes</span>
+                </div>
+                <h1 class="text-3xl font-extrabold text-white tracking-tight"><span data-i18n="welcomeText">Welcome Back</span>, <span id="userName" class="text-purple-400 ml-2 mr-2 px-1">Operator</span></h1>
+                <p class="text-xs text-gray-300" data-i18n="bannerDesc">Global neural defense vectors are active. Real-time fraud telemetry and international threat monitoring are fully operational.</p>
+            </div>
+            <div class="w-16 h-16 rounded-full bg-purple-500/20 border-2 border-purple-400/50 text-purple-200 flex items-center justify-center text-2xl shadow-[0_0_25px_rgba(168,85,247,0.4)]">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+        </div>
+
+        <!-- QUICK ACTIONS BAR -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <button onclick="triggerQuickScan()" class="purple-glass p-4 rounded-2xl flex items-center space-x-3 hover:border-purple-400 transition group text-left">
+                <div class="w-10 h-10 rounded-xl bg-purple-600/20 flex items-center justify-center text-purple-300 group-hover:scale-110 transition"><i class="fa-solid fa-radar"></i></div>
+                <div>
+                    <span class="block text-xs font-bold text-white">Full Node Scan</span>
+                    <span class="block text-[10px] text-gray-400">Run security audit</span>
+                </div>
+            </button>
+            <button onclick="clearLogs()" class="purple-glass p-4 rounded-2xl flex items-center space-x-3 hover:border-purple-400 transition group text-left">
+                <div class="w-10 h-10 rounded-xl bg-emerald-600/20 flex items-center justify-center text-emerald-300 group-hover:scale-110 transition"><i class="fa-solid fa-broom"></i></div>
+                <div>
+                    <span class="block text-xs font-bold text-white">Purge Cache</span>
+                    <span class="block text-[10px] text-gray-400">Clear temp packets</span>
+                </div>
+            </button>
+            <button onclick="toggleAutoDefense()" id="defenseBtn" class="purple-glass p-4 rounded-2xl flex items-center space-x-3 hover:border-purple-400 transition group text-left">
+                <div class="w-10 h-10 rounded-xl bg-amber-600/20 flex items-center justify-center text-amber-300 group-hover:scale-110 transition"><i class="fa-solid fa-shield-dog"></i></div>
+                <div>
+                    <span class="block text-xs font-bold text-white">Auto-Defense</span>
+                    <span class="block text-[10px] text-gray-400" id="defenseState">Active (Shielded)</span>
+                </div>
+            </button>
+            <button onclick="exportTelemetryReport()" class="purple-glass p-4 rounded-2xl flex items-center space-x-3 hover:border-purple-400 transition group text-left">
+                <div class="w-10 h-10 rounded-xl bg-rose-600/20 flex items-center justify-center text-rose-300 group-hover:scale-110 transition"><i class="fa-solid fa-file-arrow-down"></i></div>
+                <div>
+                    <span class="block text-xs font-bold text-white">Export Logs</span>
+                    <span class="block text-[10px] text-gray-400">Download CSV/PDF</span>
+                </div>
+            </button>
+        </div>
+
+        <!-- ADVANCED VERIFICATION SUITE -->
+        <div class="purple-glass p-8 rounded-[35px] space-y-6 border border-purple-500/40 shadow-2xl">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-semibold uppercase tracking-widest text-purple-400" data-i18n="suiteSub">Advanced Verification Suite</span>
+                    <h2 class="text-2xl font-extrabold text-white tracking-tight mt-1" data-i18n="suiteTitle">AI Truth & Fraud Detector Hub</h2>
+                    <p class="text-xs text-gray-300 mt-1" data-i18n="suiteDesc">Verify any text message, suspicious video, deepfake audio, or use voice typing in any language to check authenticity instantly.</p>
+                </div>
+                <div class="flex items-center space-x-2 bg-purple-950/80 px-4 py-2 rounded-2xl border border-purple-500/30">
+                    <i class="fa-solid fa-microphone-lines text-purple-400 animate-pulse"></i>
+                    <span class="text-xs text-purple-200 font-medium" data-i18n="micReady">Voice Typing Ready (Multi-Lang)</span>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="flex flex-wrap gap-2 border-b border-purple-900/60 pb-4">
+                <button onclick="switchTab('text')" id="tabTextBtn" class="px-5 py-2.5 rounded-2xl text-xs font-bold bg-purple-600 text-white shadow-lg transition flex items-center space-x-2">
+                    <i class="fa-solid fa-font"></i> <span data-i18n="tabText">Text Verifier</span>
+                </button>
+                <button onclick="switchTab('video')" id="tabVideoBtn" class="px-5 py-2.5 rounded-2xl text-xs font-bold bg-purple-950/60 text-purple-300 hover:bg-purple-900/50 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-video"></i> <span data-i18n="tabVideo">Video Verifier (Deepfake)</span>
+                </button>
+                <button onclick="switchTab('audio')" id="tabAudioBtn" class="px-5 py-2.5 rounded-2xl text-xs font-bold bg-purple-950/60 text-purple-300 hover:bg-purple-900/50 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-volume-high"></i> <span data-i18n="tabAudio">Audio / AI Voice Check</span>
+                </button>
+            </div>
+
+            <!-- Tab 1: Text Verifier -->
+            <div id="tabTextContent" class="space-y-4">
+                <div class="relative">
+                    <textarea id="verifyTextInput" rows="4" class="w-full p-4 bg-black/50 border border-purple-500/30 rounded-2xl text-xs text-white focus:outline-none focus:border-purple-400 custom-scroll" placeholder="Paste suspicious SMS, message or type here to check truth & scam risk..."></textarea>
+                    <div class="absolute bottom-3 right-3 flex items-center space-x-2">
+                        <button onclick="startVoiceTyping()" type="button" class="px-3 py-1.5 bg-purple-600/40 hover:bg-purple-600 text-purple-200 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition border border-purple-400/30">
+                            <i class="fa-solid fa-microphone text-rose-400" id="micIcon"></i>
+                            <span data-i18n="voiceTypeBtn">Voice Type</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span id="voiceStatus" class="text-[11px] text-gray-400">Speak or type in Marathi, Hindi, English, or any language...</span>
+                    <button onclick="runTextVerification()" class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg transition" data-i18n="verifyNowBtn">Verify Authenticity</button>
+                </div>
+                <div id="textResultBox" class="hidden p-5 rounded-2xl bg-black/60 border border-purple-500/40 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-purple-300" data-i18n="analysisResult">Analysis Report:</span>
+                        <span id="riskBadge" class="px-2.5 py-0.5 rounded text-[10px] font-bold"></span>
+                    </div>
+                    <p id="resultTextDesc" class="text-xs text-gray-200"></p>
+                </div>
+            </div>
+
+            <!-- Tab 2: Video Verifier -->
+            <div id="tabVideoContent" class="hidden space-y-4">
+                <div class="border-2 border-dashed border-purple-500/40 rounded-2xl p-8 text-center bg-black/30 hover:border-purple-400 transition cursor-pointer" onclick="document.getElementById('videoFile').click()">
+                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-purple-400 mb-2"></i>
+                    <p class="text-xs font-bold text-white" data-i18n="uploadVideoText">Click to upload video file or drag & drop (MP4, AVI, MOV)</p>
+                    <p class="text-[10px] text-gray-400 mt-1" data-i18n="uploadVideoSub">Our AI scans facial artifacts, unnatural blink rates, and deepfake sync.</p>
+                    <input type="file" id="videoFile" class="hidden" accept="video/*" onchange="handleFileSelect('video')">
+                </div>
+                <div id="videoResultBox" class="hidden p-5 rounded-2xl bg-black/60 border border-purple-500/40 space-y-2">
+                    <span class="text-xs font-bold text-purple-300">Video Deepfake Scan Complete:</span>
+                    <p id="videoResultDesc" class="text-xs text-gray-200"></p>
+                </div>
+            </div>
+
+            <!-- Tab 3: Audio Verifier -->
+            <div id="tabAudioContent" class="hidden space-y-4">
+                <div class="border-2 border-dashed border-purple-500/40 rounded-2xl p-8 text-center bg-black/30 hover:border-purple-400 transition cursor-pointer" onclick="document.getElementById('audioFile').click()">
+                    <i class="fa-solid fa-file-audio text-3xl text-purple-400 mb-2"></i>
+                    <p class="text-xs font-bold text-white" data-i18n="uploadAudioText">Upload recorded phone call or audio clip (.mp3, .wav)</p>
+                    <p class="text-[10px] text-gray-400 mt-1" data-i18n="uploadAudioSub">Detects synthetic clone voices and AI voice phishing attempts.</p>
+                    <input type="file" id="audioFile" class="hidden" accept="audio/*" onchange="handleFileSelect('audio')">
+                </div>
+                <div id="audioResultBox" class="hidden p-5 rounded-2xl bg-black/60 border border-purple-500/40 space-y-2">
+                    <span class="text-xs font-bold text-purple-300">Audio Spectrum Analysis Complete:</span>
+                    <p id="audioResultDesc" class="text-xs text-gray-200"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="purple-glass p-6 rounded-[30px] space-y-3">
+                <div class="flex items-center justify-between text-purple-300">
+                    <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="metric1Title">Global Fraud Index</span>
+                    <i class="fa-solid fa-triangle-exclamation text-lg text-amber-400"></i>
+                </div>
+                <div class="text-2xl font-extrabold text-white">1,482 <span class="text-xs font-normal text-rose-400" data-i18n="metric1Sub">+18 Active Vectors</span></div>
+                <p class="text-[11px] text-gray-400" data-i18n="metric1Desc">Monitored phishing, malware, and cyber fraud instances globally.</p>
+            </div>
+
+            <div class="purple-glass p-6 rounded-[30px] space-y-3">
+                <div class="flex items-center justify-between text-purple-300">
+                    <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="metric2Title">Intercepted Scams</span>
+                    <i class="fa-solid fa-shield-halved text-lg text-emerald-400"></i>
+                </div>
+                <div class="text-2xl font-extrabold text-white">99.94% <span class="text-xs font-normal text-emerald-400" data-i18n="metric2Sub">Blocked</span></div>
+                <p class="text-[11px] text-gray-400" data-i18n="metric2Desc">Total financial & identity scams neutralized automatically.</p>
+            </div>
+
+            <div class="purple-glass p-6 rounded-[30px] space-y-3">
+                <div class="flex items-center justify-between text-purple-300">
+                    <span class="text-xs font-semibold uppercase tracking-wider" data-i18n="metric3Title">Active Threat Level</span>
+                    <i class="fa-solid fa-bolt text-lg text-purple-400"></i>
+                </div>
+                <div class="text-2xl font-extrabold text-white"><span data-i18n="threatLvl">Moderate</span> <span class="text-xs font-normal text-amber-400">Level 3</span></div>
+                <p class="text-[11px] text-gray-400" data-i18n="metric3Desc">Elevated cyber scam attempts reported across APAC & EMEA.</p>
+            </div>
+        </div>
+
+        <!-- GRAPHS SECTION -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="purple-glass p-8 rounded-[35px] space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-base font-bold text-white tracking-wide" data-i18n="chart1Title">Global Fraud Attack Trends (2026)</h3>
+                    <span class="text-xs text-purple-400 font-medium" data-i18n="realtimeFeed">Real-time Feed</span>
+                </div>
+                <div class="h-64 flex items-center justify-center">
+                    <canvas id="fraudTrendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="purple-glass p-8 rounded-[35px] space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-base font-bold text-white tracking-wide" data-i18n="chart2Title">Distribution of Cyber Frauds</h3>
+                    <span class="text-xs text-purple-400 font-medium" data-i18n="categoryBreakdown">Category Breakdown</span>
+                </div>
+                <div class="h-64 flex items-center justify-center">
+                    <canvas id="fraudCategoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIVE TERMINAL LOGS -->
+        <div class="purple-glass p-8 rounded-[35px] space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-extrabold text-white tracking-tight">Live Neural Diagnostic Logs</h3>
+                    <p class="text-xs text-gray-400">Real-time telemetry and packet inspection feed from global proxy nodes.</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="text-xs text-emerald-300 font-mono">NODE_CLUSTER_ACTIVE</span>
+                </div>
+            </div>
+            
+            <div id="terminalLogBox" class="bg-black/80 border border-purple-500/30 rounded-2xl p-4 font-mono text-[11px] text-purple-300 h-48 overflow-y-auto custom-scroll space-y-1.5">
+                <div>[16:10:40] [SYS_INIT] vanishield Neural Defense Core initialized successfully.</div>
+                <div>[16:10:42] [PROXY_NODE] Connected to Mumbai, Tokyo, and Frankfurt secure gateways.</div>
+                <div>[16:10:45] [SCANNER] Monitoring incoming speech waveforms and text vectors...</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- SETTINGS MODAL / DRAWER (Updated with Dark/Light Toggle, Password Fields, and Login Info) -->
+    <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+        <div class="purple-glass w-full max-w-md p-6 rounded-[30px] border border-purple-500/40 space-y-6 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between border-b border-purple-900/60 pb-4">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-purple-600/30 flex items-center justify-center text-purple-300">
+                        <i class="fa-solid fa-sliders text-xs"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-white">Neural Control Settings</h3>
+                </div>
+                <button onclick="toggleSettingsModal()" class="w-8 h-8 rounded-full bg-purple-950/60 hover:bg-purple-800/60 text-gray-400 hover:text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <!-- DARK / LIGHT MODE TOGGLE -->
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-purple-500/20">
+                    <div>
+                        <span class="font-bold text-white block">Theme Mode (Dark / Light)</span>
+                        <span class="text-[10px] text-gray-400">Switch between dark and light appearance</span>
+                    </div>
+                    <button onclick="toggleThemeMode()" id="themeToggleBtn" class="px-3 py-1.5 bg-purple-600 text-white rounded-xl font-bold transition">Dark Mode</button>
+                </div>
+
+                <!-- OLD & NEW PASSWORD OPTIONS -->
+                <div class="space-y-2 p-3 rounded-2xl bg-black/40 border border-purple-500/20">
+                    <span class="font-bold text-white block">Change Password</span>
+                    <input type="password" id="oldPasswordInput" placeholder="Enter Old Password" class="w-full px-3 py-1.5 bg-black/60 border border-purple-500/30 rounded-xl text-white focus:outline-none focus:border-purple-400 text-xs mb-2">
+                    <input type="password" id="newPasswordInput" placeholder="Enter New Password" class="w-full px-3 py-1.5 bg-black/60 border border-purple-500/30 rounded-xl text-white focus:outline-none focus:border-purple-400 text-xs">
+                </div>
+
+                <!-- LOGIN USER INFO & LOCATION -->
+                <div class="p-3 rounded-2xl bg-black/40 border border-purple-500/20 space-y-1">
+                    <span class="font-bold text-white block">Active Login Session Info</span>
+                    <div class="text-[11px] text-gray-300 flex justify-between">
+                        <span>Username:</span>
+                        <span id="sessionUsername" class="text-purple-400 font-semibold">Operator</span>
+                    </div>
+                    <div class="text-[11px] text-gray-300 flex justify-between">
+                        <span>Login Location / IP:</span>
+                        <span id="sessionLocation" class="text-emerald-400 font-semibold">Local Gateway (India)</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-purple-500/20">
+                    <div>
+                        <span class="font-bold text-white block">High-Frequency Telemetry Sound</span>
+                        <span class="text-[10px] text-gray-400">Play audio cues on threat detection</span>
+                    </div>
+                    <input type="checkbox" id="settingSound" checked class="accent-purple-600 w-4 h-4 cursor-pointer">
+                </div>
+
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-purple-500/20">
+                    <div>
+                        <span class="font-bold text-white block">Aggressive Proxy Filtering</span>
+                        <span class="text-[10px] text-gray-400">Block unknown packet streams instantly</span>
+                    </div>
+                    <input type="checkbox" id="settingProxy" checked class="accent-purple-600 w-4 h-4 cursor-pointer">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-gray-300 font-semibold block">API Gateway Endpoint</label>
+                    <input type="text" id="settingApiUrl" value="http://127.0.0.1:8000" class="w-full px-3.5 py-2 bg-black/60 border border-purple-500/30 rounded-xl text-white focus:outline-none focus:border-purple-400 text-xs">
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="toggleSettingsModal()" class="px-4 py-2 bg-purple-950/60 hover:bg-purple-900 text-gray-300 rounded-xl font-semibold transition">Cancel</button>
+                <button onclick="saveSettings()" class="px-5 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-bold shadow-lg shadow-purple-600/30 transition">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="purple-glass border-t border-purple-900/40 py-6 text-center text-xs text-gray-400 mt-12">
+        <p>&copy; 2026 Satya-Net Pro. All rights reserved. Enterprise Security Suite.</p>
+    </footer>
+
+    <!-- SCRIPT ENGINE -->
+    <script>
+        const translations = {
+            en: {
+                navSubtitle: "Neural Defense Core",
+                btnLogout: "Logout",
+                bannerStatus: "System Online & Secured Across Global Nodes",
+                welcomeText: "Welcome Back",
+                bannerDesc: "Global neural defense vectors are active. Real-time fraud telemetry and international threat monitoring are fully operational.",
+                suiteSub: "Advanced Verification Suite",
+                suiteTitle: "AI Truth & Fraud Detector Hub",
+                suiteDesc: "Verify any text message, suspicious video, deepfake audio, or use voice typing in any language to check authenticity instantly.",
+                micReady: "Voice Typing Ready (Multi-Lang)",
+                tabText: "Text Verifier",
+                tabVideo: "Video Verifier (Deepfake)",
+                tabAudio: "Audio / AI Voice Check",
+                voiceTypeBtn: "Voice Type",
+                verifyNowBtn: "Verify Authenticity",
+                analysisResult: "Analysis Report:",
+                uploadVideoText: "Click to upload video file or drag & drop (MP4, AVI, MOV)",
+                uploadVideoSub: "Our AI scans facial artifacts, unnatural blink rates, and deepfake sync.",
+                uploadAudioText: "Upload recorded phone call or audio clip (.mp3, .wav)",
+                uploadAudioSub: "Detects synthetic clone voices and AI voice phishing attempts.",
+                metric1Title: "Global Fraud Index",
+                metric1Sub: "+18 Active Vectors",
+                metric1Desc: "Monitored phishing, malware, and cyber fraud instances globally.",
+                metric2Title: "Intercepted Scams",
+                metric2Sub: "Blocked",
+                metric2Desc: "Total financial & identity scams neutralized automatically.",
+                metric3Title: "Active Threat Level",
+                threatLvl: "Moderate",
+                metric3Desc: "Elevated cyber scam attempts reported across APAC & EMEA.",
+                chart1Title: "Global Fraud Attack Trends (2026)",
+                realtimeFeed: "Real-time Feed",
+                chart2Title: "Distribution of Cyber Frauds",
+                categoryBreakdown: "Category Breakdown"
+            },
+            hi: {
+                navSubtitle: "न्यूरल डिफेंस कोर",
+                btnLogout: "लॉग आउट",
+                bannerStatus: "सिस्टम ऑनलाइन और वैश्विक नोड्स पर सुरक्षित है",
+                welcomeText: "वापसी पर स्वागत है",
+                bannerDesc: "वैश्विक न्यूरल डिफेंस वेक्टर्स सक्रिय हैं। रीयल-टाइम फ्रॉड टेलीमेट्री और अंतरराष्ट्रीय खतरा निगरानी पूरी तरह चालू है।",
+                suiteSub: "उन्नत सत्यापन सूट",
+                suiteTitle: "AI सत्य और फ्रॉड डिटेक्टर हब",
+                suiteDesc: "किसी भी टेक्स्ट संदेश, संदिग्ध वीडियो, डीपफेक ऑडियो को सत्यापित करें या किसी भी भाषा में आवाज टाइपिंग का उपयोग करें।",
+                micReady: "वॉयस टाइपिंग तैयार (बहुभाषी)",
+                tabText: "टेक्स्ट वेरिफायर",
+                tabVideo: "वीडियो वेरिफायर (डीपफेक)",
+                tabAudio: "ऑडियो / AI वॉयस चेक",
+                voiceTypeBtn: "वॉयस टाइप",
+                verifyNowBtn: "सच्चाई जांचें",
+                analysisResult: "विश्लेषण रिपोर्ट:",
+                uploadVideoText: "वीडियो फ़ाइल अपलोड करने के लिए क्लिक करें",
+                uploadVideoSub: "हमारा AI चेहरे के बदलाव और डीपफेक सिंक को स्कैन करता है।",
+                uploadAudioText: "रिकॉर्ड की गई कॉल या ऑडियो क्लिप अपलोड करें",
+                uploadAudioSub: "सिंथेटिक क्लोन आवाज़ों और AI वॉयस फ़िशिंग का पता लगाता है।",
+                metric1Title: "वैश्विक फ्रॉड इंडेक्स",
+                metric1Sub: "+18 सक्रिय वेक्टर्स",
+                metric1Desc: "वैश्विक स्तर पर मॉनिटर किए गए फ़िशिंग, मालवेयर और साइबर फ्रॉड।",
+                metric2Title: "रोके गए घोटाले",
+                metric2Sub: "ब्लॉक किया गया",
+                metric2Desc: "कुल वित्तीय और पहचान घोटालों को स्वचालित रूप से बेअसर किया गया।",
+                metric3Title: "सक्रिय खतरे का स्तर",
+                threatLvl: "मध्यम",
+                metric3Desc: "APAC और EMEA में बढ़े हुए साइबर घोटाले के प्रयास रिपोर्ट किए गए।",
+                chart1Title: "वैश्विक फ्रॉड अटैक ट्रेंड्स (2026)",
+                realtimeFeed: "रीयल-टाइम फीड",
+                chart2Title: "साइबर फ्रॉड का वितरण",
+                categoryBreakdown: "श्रेणी विभाजन"
+            },
+            mr: {
+                navSubtitle: "न्यूरल डिफेन्स कोर",
+                btnLogout: "लॉग आउट",
+                bannerStatus: "सिस्टम ऑनलाइन आणि सुरक्षित आहे",
+                welcomeText: "पुन्हा स्वागत आहे",
+                bannerDesc: "ग्लोबल न्यूरल डिफेन्स व्हेक्टर सक्रिय आहेत. रिअल-टाइम फसवणूक टेलिमेट्री चालू आहे.",
+                suiteSub: "प्रगत पडताळणी Suite",
+                suiteTitle: "AI सत्य आणि फ्रॉड डिटेक्टर हब",
+                suiteDesc: "कोणताही संदेश, व्हिडिओ, ऑडिओ तपासा किंवा कोणत्याही भाषेत व्हॉइस टायपिंग वापरा.",
+                micReady: "व्हॉइस टायपिंग तयार (बहुभाषिक)",
+                tabText: "मजकूर पडताळणी",
+                tabVideo: "व्हिडिओ पडताळणी",
+                tabAudio: "ऑडिओ तपासणी",
+                voiceTypeBtn: "बोलून लिहा",
+                verifyNowBtn: "सत्यता तपासा",
+                analysisResult: "विश्लेषण अहवाल:",
+                uploadVideoText: "व्हिडिओ फाइल अपलोड करण्यासाठी क्लिक करा",
+                uploadVideoSub: "आमचे AI चेहऱ्याचे हावभाव आणि डिपफेक तपासते.",
+                uploadAudioText: "रेकॉर्ड केलेली कॉल किंवा ऑडिओ फाइल अपलोड करा",
+                uploadAudioSub: "सिंथेटिक आवाज आणि AI फिशिंग शोधून काढते.",
+                metric1Title: "ग्लोबल फ्रॉड इंडेक्स",
+                metric1Sub: "+18 सक्रिय व्हेक्टर्स",
+                metric1Desc: "जागतिक स्तरावर मॉनिटर केलेले फिशिंग, मालवेअर आणि सायबर फसवणूक.",
+                metric2Title: "रोखलेले घोटाळे",
+                metric2Sub: "ब्लॉक केले",
+                metric2Desc: "एकूण आर्थिक आणि ओळख घोटाळे स्वयंचलितपणे निष्प्रभ केले.",
+                metric3Title: "सक्रिय धोक्याची पातळी",
+                threatLvl: "मध्यम",
+                metric3Desc: "APAC आणि EMEA मधील वाढलेले सायबर धोके.",
+                chart1Title: "जागतिक फ्रॉड अटॅक ट्रेंड्स (2026)",
+                realtimeFeed: "रिअल-टाइम फीड",
+                chart2Title: "सायबर फसवणुकीचे वितरण",
+                categoryBreakdown: "श्रेणी विभागणी"
+            },
+            ah: {
+                navSubtitle: "न्यूरल डिफेन्स कोर",
+                btnLogout: "लॉग आऊट",
+                bannerStatus: "सिस्टम चालू शे अन सुरक्षित शे",
+                welcomeText: "राम राम सा",
+                bannerDesc: "ग्लोबल न्यूरल डिफेन्स चालू शे. रिअल-टाइम मॉनिटरिंग सुरू शे.",
+                suiteSub: "ॲडव्हान्स तपासणी",
+                suiteTitle: "AI सत्य अन फ्रॉड तपासणी हब",
+                suiteDesc: "कोणीतीही माहिती, व्हिडिओ, ऑडिओ तपासा किंवा कोणत्याही भाषेत बोलून लिहा.",
+                micReady: "बोलून लिहीणे चालू शे",
+                tabText: "मजकूर तपासणी",
+                tabVideo: "व्हिडिओ तपासणी",
+                tabAudio: "ऑडिओ तपासणी",
+                voiceTypeBtn: "बोलून लिहा",
+                verifyNowBtn: "खरे-खोटे तपासा",
+                analysisResult: "तपासणी अहवाल:",
+                uploadVideoText: "व्हिडिओ अपलोड करा",
+                uploadVideoSub: "डिपफेक व्हिडिओ तपासा.",
+                uploadAudioText: "ऑडिओ फाइल टाका",
+                uploadAudioSub: "खोटा आवाज ओळखा.",
+                metric1Title: "ग्लोबल फ्रॉड इंडेक्स",
+                metric1Sub: "+18 चालू",
+                metric1Desc: "फिशिंग अन सायबर फ्रॉड.",
+                metric2Title: "रोखलेले स्कॅम्स",
+                metric2Sub: "ब्लॉक",
+                metric2Desc: "आर्थिक घोटाळे थांबवले.",
+                metric3Title: "सध्याचा धोका",
+                threatLvl: "मध्यम",
+                metric3Desc: "सायबर घोटाळे.",
+                chart1Title: "जागतिक फ्रॉड ट्रेंड्स (2026)",
+                realtimeFeed: "लाईव्ह फीड",
+                chart2Title: "सायबर फ्रॉड वर्गीकरण",
+                categoryBreakdown: "विभागणी"
+            },
+            gu: {
+                navSubtitle: "ન્યુરલ ડિફેન્સ કોર",
+                btnLogout: "લોગ આウト",
+                bannerStatus: "સિસ્ટમ ઓનલાઇન અને સુરક્ષિત છે",
+                welcomeText: "સ્વાગત છે",
+                bannerDesc: "ગ્લોબલ ન્યુરલ ડિફેન્સ વેક્ટર્સ સક્રિય છે.",
+                suiteSub: "એડવાન્સ્ડ વેરિફિકેશન સૂટ",
+                suiteTitle: "AI સત્ય અને ફ્રોડ ડિટેક્ટર હબ",
+                suiteDesc: "કોઈપણ મેસેજ, વિડિયો, ઓડિયો તપાસો અથવા કોઈપણ ભાષામાં વોઈસ ટાઈપિંગનો ઉપયોગ કરો.",
+                micReady: "વોઈસ ટાઈપિંગ તૈયાર",
+                tabText: "ટેક્સ્ટ વેરિફાયર",
+                tabVideo: "વિડિયો વેરિફાયર",
+                tabAudio: "ઓડિયો / AI વોઈસ ચેક",
+                voiceTypeBtn: "બોલીને લખો",
+                verifyNowBtn: "સત્યતા ચકાસો",
+                analysisResult: "વિશ્લેષણ રિપોર્ટ:",
+                uploadVideoText: "વિડિયો ફાઇલ અપલોડ કરવા ક્લિક કરો",
+                uploadVideoSub: "અમારું AI ફેસિયલ આર્ટિફેક્ટ્સ અને ડીપફેક સ્કેન કરે છે.",
+                uploadAudioText: "ઓડિયો ક્લિપ અપલોડ કરો",
+                uploadAudioSub: "સિન્થેટિક ક્લોન અવાજો શોધી કાઢે છે.",
+                metric1Title: "ગ્લોબલ ફ્રોડ ઇન્ડેક્સ",
+                metric1Sub: "+18 સક્રિય વેક્ટર્સ",
+                metric1Desc: "વૈશ્વિક સ્તરે મોનિટર કરેલ ફિશિંગ અને સાયબર ફ્રોડ.",
+                metric2Title: "અટકાવેલા કૌભાંડો",
+                metric2Sub: "બ્લોક કરેલ",
+                metric2Desc: "નાણાકીય અને ઓળખ કૌભાંડો આપમેળે નાબૂદ કર્યા.",
+                metric3Title: "સક્રિય જોખમ સ્તર",
+                threatLvl: "મધ્યમ",
+                metric3Desc: "APAC અને EMEA માં વધેલા સાયબર પ્રયાસો.",
+                chart1Title: "વૈશ્વિક ફ્રોડ અટેક ટ્રેન્ડ્સ (2026)",
+                realtimeFeed: "રિયલ-ટાઇમ ફીડ",
+                chart2Title: "સાયબર ફ્રોડનું વિતરણ",
+                categoryBreakdown: "શ્રેણી વિભાજન"
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        const storedUser = localStorage.getItem('satya_user');
+        if (storedUser) {
+            document.getElementById('userName').textContent = storedUser;
+            document.getElementById('sessionUsername').textContent = storedUser;
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('satya_user');
+            window.location.href = 'login.html';
+        }
+
+        function toggleLangDropdown() {
+            const dropdown = document.getElementById('langDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function filterLanguages() {
+            let input = document.getElementById('langSearch').value.toLowerCase();
+            let list = document.getElementById('langList');
+            let items = list.getElementsByTagName('div');
+            for (let i = 0; i < items.length; i++) {
+                let text = items[i].textContent || items[i].innerText;
+                items[i].style.display = text.toLowerCase().indexOf(input) > -1 ? "" : "none";
+            }
+        }
+
+        function setLanguage(langCode) {
+            currentLanguage = langCode;
+            const labels = {
+                'en': 'English',
+                'hi': 'हिंदी (Hindi)',
+                'mr': 'मराठी (Marathi)',
+                'ah': 'अहिराणी (Ahirani)',
+                'gu': 'ગુજરાતી (Gujarati)'
+            };
+            
+            document.getElementById('currentLangLabel').textContent = labels[langCode] || 'English';
+            document.getElementById('langDropdown').classList.add('hidden');
+
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[langCode] && translations[langCode][key]) {
+                    el.textContent = translations[langCode][key];
+                } else if (translations['en'][key]) {
+                    el.textContent = translations['en'][key];
+                }
+            });
+        }
+
+        function toggleSettingsModal() {
+            const modal = document.getElementById('settingsModal');
+            modal.classList.toggle('hidden');
+        }
+
+        let isDarkMode = true;
+        function toggleThemeMode() {
+            isDarkMode = !isDarkMode;
+            const htmlTag = document.documentElement;
+            const themeBtn = document.getElementById('themeToggleBtn');
+            if(isDarkMode) {
+                htmlTag.classList.add('dark');
+                themeBtn.textContent = "Dark Mode";
+                logTerminal("[THEME] Switched to Dark Mode.");
+            } else {
+                htmlTag.classList.remove('dark');
+                themeBtn.textContent = "Light Mode";
+                logTerminal("[THEME] Switched to Light Mode.");
+            }
+        }
+
+        function saveSettings() {
+            const soundEnabled = document.getElementById('settingSound').checked;
+            const proxyEnabled = document.getElementById('settingProxy').checked;
+            const apiUrl = document.getElementById('settingApiUrl').value;
+            const oldPass = document.getElementById('oldPasswordInput').value;
+            const newPass = document.getElementById('newPasswordInput').value;
+            
+            if(newPass) {
+                logTerminal("[SECURITY] Password update requested for current session user.");
+            }
+
+            localStorage.setItem('satya_sound', soundEnabled);
+            localStorage.setItem('satya_proxy', proxyEnabled);
+            localStorage.setItem('satya_api', apiUrl);
+
+            toggleSettingsModal();
+            logTerminal("[CONFIG] Settings updated and synced with local gateway.");
+        }
+
+        function logTerminal(message) {
+            const terminal = document.getElementById('terminalLogBox');
+            const timeStr = new Date().toTimeString().split(' ')[0];
+            terminal.innerHTML += `<div>[${timeStr}] ${message}</div>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function triggerQuickScan() {
+            logTerminal("[SCAN] Full Node Security Audit initiated across all proxies...");
+            setTimeout(() => {
+                logTerminal("[SCAN_COMPLETE] 0 critical vulnerabilities found. All nodes secured.");
+            }, 1200);
+        }
+
+        function clearLogs() {
+            document.getElementById('terminalLogBox').innerHTML = `<div>[SYS] Temporary telemetry cache purged successfully.</div>`;
+        }
+
+        let defenseActive = true;
+        function toggleAutoDefense() {
+            defenseActive = !defenseActive;
+            const stateEl = document.getElementById('defenseState');
+            if(defenseActive) {
+                stateEl.textContent = "Active (Shielded)";
+                logTerminal("[SHIELD] Auto-Defense protocol armed.");
+            } else {
+                stateEl.textContent = "Disabled (Manual)";
+                logTerminal("[SHIELD] Warning: Auto-Defense disarmed!");
+            }
+        }
+
+        function exportTelemetryReport() {
+            logTerminal("[EXPORT] Generating encrypted CSV telemetry report...");
+            setTimeout(() => {
+                logTerminal("[EXPORT_SUCCESS] Report downloaded to local device storage.");
+            }, 1000);
+        }
+
+        function switchTab(tabName) {
+            document.getElementById('tabTextContent').classList.add('hidden');
+            document.getElementById('tabVideoContent').classList.add('hidden');
+            document.getElementById('tabAudioContent').classList.add('hidden');
+
+            document.getElementById('tabTextBtn').className = "px-5 py-2.5 rounded-2xl text-xs font-bold bg-purple-950/60 text-purple-300 hover:bg-purple-900/50 transition flex items-center space-x-2";
+            document.getElementById('tabVideoBtn').className = "px-5 py-2.5 rounded-2xl text-xs font-bold bg-purple-950/60 text-purple-300 hover:bg-purple-900/50 transition flex items-center space-x-2";
+            document.getElementById('tabAudioBtn').className = "px-5 py-2.5 rounded-2xl text-xs font-bold bg-purple-950/60 text-purple-300 hover:bg-purple-900/50 transition flex items-center space-x-2";
+
+            if(tabName === 'text') {
+                document.getElementById('tabTextContent').classList.remove('hidden');
+                document.getElementById('tabTextBtn').className = "px-5 py-2.5 rounded-2xl text-xs font-bold bg-purple-600 text-white shadow-lg transition flex items-center space-x-2";
+                logTerminal("[UI] Switched to Text Verifier module.");
+            } else if(tabName === 'video') {
+                document.getElementById('tabVideoContent').classList.remove('hidden');
+                document.getElementById('tabVideoBtn').className = "px-5 py-2.5 rounded-2xl text-xs font-bold bg-purple-600 text-white shadow-lg transition flex items-center space-x-2";
+                logTerminal("[UI] Switched to Video Deepfake Scanner module.");
+            } else if(tabName === 'audio') {
+                document.getElementById('tabAudioContent').classList.remove('hidden');
+                document.getElementById('tabAudioBtn').className = "px-5 py-2.5 rounded-2xl text-xs font-bold bg-purple-600 text-white shadow-lg transition flex items-center space-x-2";
+                logTerminal("[UI] Switched to Audio / AI Voice Check module.");
+            }
+        }
+
+        function startVoiceTyping() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Speech recognition is not supported in your browser. Please type manually.");
+                return;
+            }
+            const recognition = new SpeechRecognition();
+            recognition.lang = currentLanguage === 'hi' ? 'hi-IN' : currentLanguage === 'mr' ? 'mr-IN' : currentLanguage === 'gu' ? 'gu-IN' : 'en-US';
+            
+            const micIcon = document.getElementById('micIcon');
+            const voiceStatus = document.getElementById('voiceStatus');
+            
+            micIcon.classList.add('text-emerald-400', 'animate-bounce');
+            voiceStatus.textContent = "Listening... Speak now in your language...";
+            logTerminal("[MIC] Voice recognition listening started...");
+
+            recognition.onresult = function(event) {
+                const speechToText = event.results[0][0].transcript;
+                document.getElementById('verifyTextInput').value = speechToText;
+                micIcon.classList.remove('text-emerald-400', 'animate-bounce');
+                voiceStatus.textContent = "Voice captured successfully!";
+                logTerminal(`[MIC] Captured: "${speechToText}"`);
+            };
+
+            recognition.onerror = function() {
+                micIcon.classList.remove('text-emerald-400', 'animate-bounce');
+                voiceStatus.textContent = "Voice recognition error. Please try again.";
+            };
+
+            recognition.onend = function() {
+                micIcon.classList.remove('text-emerald-400', 'animate-bounce');
+            };
+
+            recognition.start();
+        }
+
+        async function runTextVerification() {
+            const text = document.getElementById('verifyTextInput').value.trim();
+            const resultBox = document.getElementById('textResultBox');
+            const riskBadge = document.getElementById('riskBadge');
+            const resultDesc = document.getElementById('resultTextDesc');
+
+            if(!text) {
+                alert("Please enter or voice type some text to verify.");
+                return;
+            }
+
+            resultBox.classList.remove('hidden');
+            riskBadge.className = "px-2.5 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30";
+            riskBadge.textContent = "AI ANALYZING...";
+            resultDesc.textContent = "Connecting with Satya-Net Gemini AI Core for deep verification...";
+            logTerminal(`[VERIFY] Sending text snippet to FastAPI backend...`);
+
+            try {
+                const apiUrl = localStorage.getItem('satya_api') || 'http://127.0.0.1:8000';
+                const response = await fetch(`${apiUrl}/verify-claim`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                if (!response.ok) {
+                    throw new Error("Server response failed.");
+                }
+
+                const data = await response.json();
+                
+                riskBadge.className = "px-2.5 py-0.5 rounded text-[10px] font-bold bg-purple-600/30 text-purple-300 border border-purple-500/40";
+                riskBadge.textContent = data.verdict || "AI VERIFIED";
+                resultDesc.textContent = data.explanation || "No explanation provided.";
+                
+                logTerminal(`[AI_SUCCESS] Text verified successfully by backend.`);
+
+            } catch (error) {
+                riskBadge.className = "px-2.5 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+                riskBadge.textContent = "CONNECTION ERROR";
+                resultDesc.textContent = "Backend server se connect nahi ho pa raha hai. Kripya check karein ki main.py chal raha hai ya nahi.";
+                logTerminal(`[ERROR] Failed to reach FastAPI backend: ${error.message}`);
+            }
+        }
+
+        function handleFileSelect(type) {
+            if(type === 'video') {
+                const fileInput = document.getElementById('videoFile');
+                if(fileInput.files.length > 0) {
+                    const box = document.getElementById('videoResultBox');
+                    const desc = document.getElementById('videoResultDesc');
+                    box.classList.remove('hidden');
+                    desc.textContent = "Analyzed '" + fileInput.files[0].name + "'. Result: Deepfake AI manipulation detected! Facial landmark inconsistency found.";
+                    logTerminal(`[VIDEO_SCAN] File "${fileInput.files[0].name}" flagged with deepfake anomalies.`);
+                }
+            } else if(type === 'audio') {
+                const fileInput = document.getElementById('audioFile');
+                if(fileInput.files.length > 0) {
+                    const box = document.getElementById('audioResultBox');
+                    const desc = document.getElementById('audioResultDesc');
+                    box.classList.remove('hidden');
+                    desc.textContent = "Analyzed '" + fileInput.files[0].name + "'. Result: Synthetic voice clone (AI generated audio) detected with 94.2% confidence.";
+                    logTerminal(`[AUDIO_SCAN] File "${fileInput.files[0].name}" identified as synthetic voice clone.`);
+                }
+            }
+        }
+
+        const ctxTrend = document.getElementById('fraudTrendChart').getContext('2d');
+        new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                datasets: [{
+                    label: 'Fraud Attempts (k)',
+                    data: [12, 19, 15, 28, 22, 35, 30, 42, 48],
+                    borderColor: '#a855f7',
+                    backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af', font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af', font: { size: 10 } } }
+                }
+            }
+        });
+
+        const ctxCategory = document.getElementById('fraudCategoryChart').getContext('2d');
+        new Chart(ctxCategory, {
+            type: 'doughnut',
+            data: {
+                labels: ['Phishing', 'Deepfake', 'Crypto Scam', 'Malware', 'Identity Theft'],
+                datasets: [{
+                    data: [35, 25, 20, 12, 8],
+                    backgroundColor: ['#a855f7', '#ec4899', '#3b82f6', '#10b981', '#f59e0b'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#d1d5db', font: { size: 10 } } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>.

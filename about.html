@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us |VANISHIELD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { darkbg: '#090d16', cardbg: '#120822' }
+                }
+            }
+        }
+        // Check if user is logged in
+document.addEventListener("DOMContentLoaded", function() {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    const currentPage = window.location.pathname.split("/").pop();
+    
+    // Agar user logged in nahi hai aur protected page par hai toh login.html par bhej do
+    if (isLoggedIn !== "true" && currentPage !== "login.html" && currentPage !== "register.html") {
+        window.location.href = "login.html";
+    }
+});
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, rgba(18, 8, 34, 0.95), rgba(9, 13, 22, 0.98)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f3f4f6;
+        }
+        .purple-glass {
+            background: rgba(25, 12, 45, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            box-shadow: 0 0 50px rgba(147, 51, 234, 0.15);
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(168,85,247,0.4);
+            border-radius: 10px;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(168,85,247,0.3); }
+            50% { box-shadow: 0 0 35px rgba(168,85,247,0.7); }
+        }
+        .glow-effect {
+            animation: pulseGlow 3s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+
+    <!-- NAVBAR -->
+    <header class="purple-glass sticky top-0 z-50 border-b border-purple-900/40">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-full bg-purple-600/20 border border-purple-400/40 flex items-center justify-center text-purple-300 font-bold shadow-lg shadow-purple-600/30">
+                    <i class="fa-solid fa-shield-halved text-sm"></i>
+                </div>
+                <div>
+                    <span class="text-base font-extrabold tracking-wider text-white">VANISHIELD</span>
+                    <span class="block text-[10px] tracking-widest text-purple-400 font-semibold uppercase" data-i18n="navSubtitle">Neural Defense Core</span>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold tracking-wide text-gray-300">
+                <a href="index.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-house-chimney text-xs"></i><span data-i18n="navHome">Home Hub</span></a>
+                <a href="matrix.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-microchip text-xs"></i><span data-i18n="navMatrix">Intelligence Matrix</span></a>
+                <a href="dashboard.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-chart-line text-xs"></i><span data-i18n="navDashboard">Neural Control Center</span></a>
+                <a href="feedback.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-satellite-dish text-xs"></i><span data-i18n="navFeedback">Telemetry Feedback</span></a>
+                <a href="about.html" class="text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-circle-info text-xs"></i><span data-i18n="navAbout">About Us</span></a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <!-- MULTILINGUAL DRAWER -->
+                <div class="relative">
+                    <button onclick="toggleLangDropdown()" class="px-4 py-2 text-xs font-semibold bg-purple-950/60 border border-purple-500/30 hover:border-purple-400 text-purple-200 rounded-full flex items-center space-x-2 transition shadow-lg">
+                        <i class="fa-solid fa-globe text-purple-400"></i>
+                        <span id="currentLangLabel">English</span>
+                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                    </button>
+                    <div id="langDropdown" class="hidden absolute right-0 mt-3 w-64 purple-glass rounded-2xl shadow-2xl border border-purple-500/30 p-3 z-50">
+                        <div class="mb-2 px-2 pb-2 border-b border-purple-900/50">
+                            <input type="text" id="langSearch" onkeyup="filterLanguages()" placeholder="Search language..." class="w-full px-3 py-1.5 bg-black/50 border border-purple-500/30 rounded-xl text-xs text-white focus:outline-none focus:border-purple-400">
+                        </div>
+                        <div id="langList" class="max-h-60 overflow-y-auto custom-scroll space-y-1 text-xs text-gray-300">
+                            <div onclick="setLanguage('en')" class="p-2 hover:bg-purple-600/20 rounded-xl cursor-pointer transition">English</div>
+                            <div onclick="setLanguage('hi')" class="p-2 hover:bg-purple-600/20 rounded-xl cursor-pointer transition">हिंदी (Hindi)</div>
+                            <div onclick="setLanguage('mr')" class="p-2 hover:bg-purple-600/20 rounded-xl cursor-pointer transition">मराठी (Marathi)</div>
+                            <div onclick="setLanguage('ah')" class="p-2 hover:bg-purple-600/20 rounded-xl cursor-pointer transition">अहिराणी (Ahirani)</div>
+                            <div onclick="setLanguage('gu')" class="p-2 hover:bg-purple-600/20 rounded-xl cursor-pointer transition">ગુજરાતી (Gujarati)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="logout()" class="px-4 py-2 text-xs font-bold tracking-wider uppercase bg-rose-600/80 hover:bg-rose-600 text-white rounded-full shadow-lg shadow-rose-600/30 transition" data-i18n="btnLogout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN ABOUT CONTENT -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-6 sm:px-8 py-12 space-y-12">
+        
+        <!-- Header Banner -->
+        <div class="purple-glass glow-effect p-8 sm:p-12 rounded-[35px] text-center space-y-4">
+            <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs font-semibold">
+                <i class="fa-solid fa-code-merge text-purple-400"></i>
+                <span data-i18n="badgeText">Project Genesis & Architecture Overview</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight" data-i18n="pageTitle">About Satya-Net Pro</h1>
+            <p class="text-xs sm:text-sm text-gray-300 max-w-2xl mx-auto leading-relaxed" data-i18n="pageDesc">Explore the vision, advanced React & AI tech stack, browser extensions, voice models, and the MCA student development cell.</p>
+        </div>
+
+        <!-- SECTION 1: Why We Built It & Necessity -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="purple-glass p-8 rounded-[30px] space-y-4 border border-purple-500/30">
+                <div class="w-10 h-10 rounded-2xl bg-purple-600/20 border border-purple-400/40 flex items-center justify-center text-purple-300 font-bold">
+                    <i class="fa-solid fa-bullseye text-sm"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white" data-i18n="whyTitle">Why We Built This App</h2>
+                <p class="text-xs sm:text-sm text-gray-300 leading-relaxed" data-i18n="whyDesc">
+                    Digital yug mein deepfakes, voice clones, aur cyber threats tezi se badh rahe hain. Ek aisa secure system banana zaroori tha jo real-time parakh kar audio-video frauds ko rok sake aur aam janta ko suraksha de sake.
+                </p>
+            </div>
+
+            <div class="purple-glass p-8 rounded-[30px] space-y-4 border border-purple-500/30">
+                <div class="w-10 h-10 rounded-2xl bg-purple-600/20 border border-purple-400/40 flex items-center justify-center text-purple-300 font-bold">
+                    <i class="fa-solid fa-shield-virus text-sm"></i>
+                </div>
+                <h2 class="text-xl font-bold text-white" data-i18n="necessityTitle">What Makes Us Different</h2>
+                <p class="text-xs sm:text-sm text-gray-300 leading-relaxed" data-i18n="necessityDesc">
+                    Humne isme React ecosystem, browser extensions, multiple AI models aur translation libraries ko integrate kiya hai taaki ye regional languages (Marathi, Hindi, Gujarati, Ahirani) mein seamless protection de sake.
+                </p>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Advanced Technology Stack (8-10 Technologies) -->
+        <div class="purple-glass p-8 sm:p-10 rounded-[35px] space-y-6 border border-purple-500/30">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-purple-600/20 border border-purple-400/40 flex items-center justify-center text-purple-300 font-bold">
+                    <i class="fa-solid fa-microchip text-sm"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white" data-i18n="techTitle">Advanced Technology Stack & Ecosystem</h2>
+                    <p class="text-xs text-purple-300" data-i18n="techSubtitle">Powered by React, AI Models, Extensions & Multiple Libraries</p>
+                </div>
+            </div>
+
+            <!-- 8 Tech Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-semibold">
+                
+                <!-- 1. React JS -->
+                <div class="p-4 rounded-2xl bg-black/40 border border-purple-500/20 flex flex-col items-center text-center space-y-2 hover:border-purple-400 transition">
+                    <i class="fa-brands fa-react text-2xl text-cyan-400"></i>
+                    <span class="text-white">React.js Framework</span>
+                    <span class="text-[10px] text-gray-400 font-normal">Component-driven UI & State Management</span>
+                </div>
+
+                <!-- 2. Browser Extension SDK -->
+                <div class="p-4 rounded-2xl bg-black/40 border border-purple-500/20 flex flex-col items-center text-center space-y-2 hover:border-purple-400 transition">
+                    <i class="fa-solid fa-puzzle-piece text-2xl text-purple-400"></i>
+                    <span class="text-white">Browser Extension SDK</span>
+                    <span class="text-[10px] text-gray-400 font-normal">Real-time web monitoring & scanning</span>
+                </div>
+
+                <!-- 3. AI & Deepfake Models -->
+                <div class="p-4 rounded-2xl bg-black/40 border border-purple-500/20 flex flex-col items-center text-center space-y-2 hover:border-purple-400 transition">
+                    <i class="fa-solid fa-brain text-2xl text-fuchsia-400"></i>
+                    <span class="text-white">Neural AI / Deepfake AI</span>
+                    <span class="text-[10px] text-gray-400 font-normal">Audio-video anomaly detection models</span>
+                </div>
+
+                <!-- 4. Voice Models & Translation -->
+                <div class="p-4 rounded-2xl bg-black/40 border border-purple-500/20 flex flex-col items-center text-center space-y-2 hover:border-purple-400 transition">
+                    <i class="fa-solid fa-microphone-lines text-2xl text-rose-400"></i>
+                    <span class="text-white">Voice Models & NLP Libs</span>
+                    <span class="text-[10px] text-gray-400 font-normal">Multilingual regional speech support</span>
+                </div>
+
+                <!-- 5. JavaScript ES6+ -->
+                <div class="p-4 rounded-2xl bg-black/40 border border-purple-500/20 flex flex-col items-center text-center space-y-2 hover:border-purple-400 transition">
+                    <i class="fa-brands fa-js text-2xl text-yellow-400"></i>
+                    <span class="text-white">JavaScript (ES6+)</span>
+                    <span class="text-[10px] text-gray-400 font-normal">Asynchronous logic & telemetry engine</span>
+                </div>
+
+                <!-- 6. Tailwind CSS & Glassmorphism -->
+                <div class="p-4 rounded-2xl bg-black/40 border border-purple-500/20 flex flex-col items-center text-center space-y-2 hover:border-purple-400 transition">
+                    <i class="fa-solid fa-palette text-2xl text-teal-400"></i>
+                    <span class="text-white">Tailwind CSS UI</span>
+                    <span class="text-[10px] text-gray-400 font-normal">Modern glassmorphism & responsive design</span>
+                </div>
+
+                <!-- 7. REST API Gateway -->
+                <div class="p-4 rounded-2xl bg-black/40 border border-purple-500/20 flex flex-col items-center text-center space-y-2 hover:border-purple-400 transition">
+                    <i class="fa-solid fa-key text-2xl text-amber-400"></i>
+                    <span class="text-white">Secure API Gateway</span>
+                    <span class="text-[10px] text-gray-400 font-normal">Token auth & encrypted data routing</span>
+                </div>
+
+                <!-- 8. Cloud Hosting -->
+                <div class="p-4 rounded-2xl bg-black/40 border border-purple-500/20 flex flex-col items-center text-center space-y-2 hover:border-purple-400 transition">
+                    <i class="fa-solid fa-cloud-arrow-up text-2xl text-indigo-400"></i>
+                    <span class="text-white">Cloud Production Node</span>
+                    <span class="text-[10px] text-gray-400 font-normal">Fast global deployment & hosting</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SECTION 3: MCA Student Team & Core Architect -->
+        <div class="purple-glass p-8 sm:p-10 rounded-[35px] space-y-6 border border-purple-500/30">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-purple-600/20 border border-purple-400/40 flex items-center justify-center text-purple-300 font-bold">
+                    <i class="fa-solid fa-graduation-cap text-sm"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white" data-i18n="teamTitle">Developed By MCA Student Team</h2>
+                    <p class="text-xs text-purple-300" data-i18n="teamSubtitle">Master of Computer Applications (MCA) Core Development Cell</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                <!-- Shubham Ravale (Lead / Architect) -->
+                <div class="p-6 rounded-3xl bg-purple-950/40 border-2 border-purple-500/50 text-center space-y-3 shadow-lg shadow-purple-600/20">
+                    <div class="w-14 h-14 mx-auto rounded-full bg-purple-600/40 border border-purple-300 flex items-center justify-center text-white text-lg font-extrabold shadow-md">
+                        SR
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-white text-sm">Shubham Ravale</h3>
+                        <span class="inline-block mt-1 px-3 py-1 rounded-full bg-purple-600/30 border border-purple-400 text-purple-200 text-[10px] font-bold" data-i18n="roleLead">Project Lead & Architect</span>
+                    </div>
+                    <p class="text-[11px] text-gray-300" data-i18n="descLead"> head of overall system integration, React architecture, AI pipeline control, and project execution backbone and ai system devoloper.</p>
+                </div>
+
+               
+
+                <!-- Makarand P -->
+                <div class="p-6 rounded-3xl bg-black/40 border border-purple-500/20 text-center space-y-3 hover:border-purple-400 transition">
+                    <div class="w-14 h-14 mx-auto rounded-full bg-purple-600/30 border border-purple-400/50 flex items-center justify-center text-purple-200 text-lg font-extrabold shadow-lg">
+                        MP
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-sm">Makarand Patil</h3>
+                        <span class="inline-block mt-1 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[10px] font-semibold" data-i18n="roleBackend">Backend Builder</span>
+                    </div>
+                    <p class="text-[11px] text-gray-400" data-i18n="descBackend">2 times avishkar statelevel student and engineer of backend Implemented database logic, authentication scripts, and telemetry data routing.</p>
+                </div>
+
+                <!-- Kaveri P -->
+                <div class="p-6 rounded-3xl bg-black/40 border border-purple-500/20 text-center space-y-3 hover:border-purple-400 transition">
+                    <div class="w-14 h-14 mx-auto rounded-full bg-purple-600/30 border border-purple-400/50 flex items-center justify-center text-purple-200 text-lg font-extrabold shadow-lg">
+                        KP
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-sm">Kaveri Patil</h3>
+                        <span class="inline-block mt-1 px-3 py-1 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-300 text-[10px] font-semibold" data-i18n="roleDeployment">Deployment Manager</span>
+                    </div>
+                    <p class="text-[11px] text-gray-400" data-i18n="descDeployment">Managed cloud hosting configurations, build pipelines, and production servers with a focus on reliability and performance as well as security.</p>
+                </div>
+
+                <!-- Ruchita Totla -->
+                <div class="p-6 rounded-3xl bg-black/40 border border-purple-500/20 text-center space-y-3 hover:border-purple-400 transition">
+                    <div class="w-14 h-14 mx-auto rounded-full bg-purple-600/30 border border-purple-400/50 flex items-center justify-center text-purple-200 text-lg font-extrabold shadow-lg">
+                        RT
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-sm">Ruchita Totla</h3>
+                        <span class="inline-block mt-1 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[10px] font-semibold" data-i18n="roleTesting">Testing & QA</span>
+                    </div>
+                    <p class="text-[11px] text-gray-400" data-i18n="descTesting">Executed rigorous bug auditing, security checks, and cross-browser quality tests and documentation or reporting.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: Any Query / Direct Gmail Contact -->
+        <div class="purple-glass glow-effect p-8 sm:p-10 rounded-[35px] text-center space-y-4 border border-purple-500/40">
+            <div class="w-12 h-12 mx-auto rounded-full bg-purple-600/20 border border-purple-400/40 flex items-center justify-center text-purple-300 text-base shadow-lg">
+                <i class="fa-solid fa-envelope-open-text"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white" data-i18n="queryTitle">Have Any Query or Feedback?</h2>
+            <p class="text-xs sm:text-sm text-gray-300 max-w-lg mx-auto" data-i18n="queryDesc">
+                Agar aapke paas koi bhi sawal ya query hai, toh aap seedha hume email bhej sakte hain:
+            </p>
+            <div class="pt-2">
+                <a href="mailto:shubhamravale09@gmail.com?subject=Query%20Regarding%20Satya-Net%20Pro&body=Hello%20Shubham,%20I%20have%20a%20query%20regarding%20Satya-Net%20Pro:" class="inline-flex items-center space-x-2.5 px-8 py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs rounded-2xl shadow-lg shadow-purple-600/30 transition">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>shubhamravale09@gmail.com</span>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="purple-glass border-t border-purple-900/40 py-6 text-center text-xs text-gray-400 mt-12">
+        <p>&copy; 2026 VANISHIELD. All rights reserved. Enterprise Security Suite.</p>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        const translations = {
+            en: {
+                navSubtitle: "Neural Defense Core",
+                navHome: "Home Hub",
+                navMatrix: "Intelligence Matrix",
+                navDashboard: "Neural Control Center",
+                navFeedback: "Telemetry Feedback",
+                navAbout: "About Us",
+                btnLogout: "Logout",
+                badgeText: "Project Genesis & Architecture Overview",
+                pageTitle: "About VANISHIELD",
+                pageDesc: "Explore the vision, advanced React & AI tech stack, browser extensions, voice models, and the MCA student development cell.",
+                whyTitle: "Why We Built This App",
+                whyDesc: "In today's digital era, deepfakes, voice clones, and cyber threats are rising. We built a secure system to detect frauds and ensure digital safety.",
+                necessityTitle: "What Makes Us Different",
+                necessityDesc: "We integrated React, browser extensions, AI models, and translation libraries to support regional languages seamlessly.",
+                techTitle: "Advanced Technology Stack & Ecosystem",
+                techSubtitle: "Powered by React, AI Models, Extensions & Multiple Libraries",
+                teamTitle: "Developed By MCA Student Team",
+                teamSubtitle: "Master of Computer Applications (MCA) Core Development Cell",
+                roleLead: "Project Lead & Architect",
+                descLead: "Masterminds overall system integration, React architecture, AI pipeline control, and project execution backbone.",
+                roleFrontend: "Frontend Maker",
+                descFrontend: "Crafted responsive user interface layouts and interactive dashboard views.",
+                roleBackend: "Backend Builder",
+                descBackend: "Implemented database logic, authentication scripts, and telemetry data routing.",
+                roleDeployment: "Deployment Manager",
+                descDeployment: "Managed cloud hosting configurations, build pipelines, and production servers.",
+                roleTesting: "Testing & QA",
+                descTesting: "Executed rigorous bug auditing, security checks, and cross-browser quality tests.",
+                queryTitle: "Have Any Query or Feedback?",
+                queryDesc: "If you have any questions or queries, you can reach out directly via email by clicking below:"
+            },
+            hi: {
+                navSubtitle: "न्यूरल डिफेंस कोर",
+                navHome: "होम हब",
+                navMatrix: "इंटेलिजेंस मैट्रिक्स",
+                navDashboard: "न्यूरल कंट्रोल सेंटर",
+                navFeedback: "टेलीमेट्री फीडबैक",
+                navAbout: "हमारे बारे में",
+                btnLogout: "लॉग आउट",
+                badgeText: "प्रोजेक्ट उत्पत्ति और वास्तुकला अवलोकन",
+                pageTitle: "सत्या-नेट प्रो के बारे में",
+                pageDesc: "रिएक्ट, एआई मॉडल्स, ब्राउज़र एक्सटेंशन, वॉयस मॉडल्स और एमसीए स्टूडेंट टीम के बारे में जानें।",
+                whyTitle: "हमने यह ऐप क्यों बनाया",
+                whyDesc: "डिजिटल युग में डीपफेक और वॉयस क्लोन खतरे बढ़ रहे हैं। फ्रॉड रोकने के लिए यह सिस्टम बनाया गया।",
+                necessityTitle: "हम अलग क्यों हैं",
+                necessityDesc: "हमने इसमें रिएक्ट, एक्सटेंशन, एआई मॉडल्स और ट्रांसलेशन लाइब्रेरीज़ को जोड़ा है।",
+                techTitle: "एडवांस टेक्नोलॉजी स्टैक और इकोसिस्टम",
+                techSubtitle: "React, AI Models, Extensions aur Multiple Libraries dwara संचालित",
+                teamTitle: "MCA छात्र टीम द्वारा विकसित",
+                teamSubtitle: "मास्टर ऑफ कंप्यूटर एप्लीकेशन कोर सेल",
+                roleLead: "प्रोजेक्ट लीड और आर्किटेक्ट",
+                descLead: "रिएक्ट आर्किटेक्चर, एआई पाइपलाइन और ओवरऑल सिस्टम इंटीग्रेशन को लीड करते हैं जिनके बिना प्रोजेक्ट अधूरा है।",
+                roleFrontend: "फ्रंटएंड मेकर",
+                descFrontend: "यूजर इंटरफेस और लेआउट तैयार किया।",
+                roleBackend: "बैकएंड बिल्डर",
+                descBackend: "डेटा लॉजिक और ऑथेंटिकेशन संभाला।",
+                roleDeployment: "डिप्लॉयमेंट मैनेजर",
+                descDeployment: "क्लाउड होस्टिंग और सर्वर मैनेज किए।",
+                roleTesting: "टेस्टिंग और क्यूए",
+                descTesting: "बग ऑडिटिंग और सुरक्षा जांच की।",
+                queryTitle: "कोई सवाल या फीडबैक है?",
+                queryDesc: "यदि आपके पास कोई भी प्रश्न है, तो नीचे दिए गए लिंक पर क्लिक करके सीधे ईमेल भेजें:"
+            },
+            mr: {
+                navSubtitle: "न्यूरल डिफेन्स कोर",
+                navHome: "होम हब",
+                navMatrix: "इन्टेलिजन्स मॅट्रिक्स",
+                navDashboard: "न्यूरल कंट्रोल सेंटर",
+                navFeedback: "टेलिमेट्री फीडबॅक",
+                navAbout: "आमच्याबद्दल",
+                btnLogout: "लॉग आउट",
+                badgeText: "प्रोजेक्ट पार्श्वभूमी आणि माहिती",
+                pageTitle: "सत्या-नेट प्रो बद्दल",
+                pageDesc: "रिॲक्ट, एआय मॉडेल्स, ब्राउझर एक्सटेंशन आणि MCA विद्यार्थी टीमबद्दल माहिती.",
+                whyTitle: "आम्ही हे ॲप का बनवले",
+                whyDesc: "सायबर गुन्हे आणि डिपफेक वाढल्यामुळे, सुरक्षित रिअल-टाइम डिटेक्शन सिस्टीमची गरज होती.",
+                necessityTitle: "आपण वेगळे का आहोत",
+                necessityDesc: "आम्ही यात रिॲक्ट, एक्सटेंशन, एआय मॉडेल्स आणि ट्रान्सलेशन लायब्ररी जोडल्या आहेत.",
+                techTitle: "प्रगत तंत्रज्ञान आणि इकोसिस्टम",
+                techSubtitle: "React, AI Models, Extensions आणि Multiple Libraries द्वारे चालित",
+                teamTitle: "MCA विद्यार्थी टीमद्वारे विकसित",
+                teamSubtitle: "मास्टर ऑफ कंप्यूटर अप्लिकेशन्स कोर सेल",
+                roleLead: "प्रोजेक्ट लीड आणि आर्किटेक्ट",
+                descLead: "रिॲक्ट आर्किटेक्चर, न्यूरल सिस्टीम आणि संपूर्ण इंटीग्रेशन सांभाळतात, ज्यांच्याशिवाय प्रोजेक्ट पूर्ण होऊ शकत नाही.",
+                roleFrontend: "फ्रंटएंड मेकर",
+                descFrontend: "युजर इंटरफेस डिझाईन केले.",
+                roleBackend: "बॅकएंड बिल्डर",
+                descBackend: "डेटा लॉजिक आणि ऑथेंटिकेशन सांभाळले.",
+                roleDeployment: "डिप्लॉयमेंट मॅनेजर",
+                descDeployment: "क्लाउड होस्टिंग आणि सर्व्हर कॉन्फिगरेशन केले.",
+                roleTesting: "टेस्टिंग आणि क्यूए",
+                descTesting: "बग ऑडिटिंग आणि सुरक्षा तपासणी केली.",
+                queryTitle: "काही शंका किंवा प्रश्न आहे का?",
+                queryDesc: "जर काही विचारायचे असेल तर थेट खालील लिंकवर क्लिक करून ईमेल पाठवा:"
+            },
+            ah: {
+                navSubtitle: "न्यूरल डिफेन्स कोर",
+                navHome: "होम हब",
+                navMatrix: "इन्टेलिजन्स मॅट्रिक्स",
+                navDashboard: "न्यूरल कंट्रोल सेंटर",
+                navFeedback: "टेलिमेट्री फीडबॅक",
+                navAbout: "आमच्याबद्दल",
+                btnLogout: "लॉग आऊट",
+                badgeText: "प्रोजेक्ट माहिती",
+                pageTitle: "सत्या-नेट प्रो विषयी",
+                pageDesc: "रिॲक्ट, एआय मॉडेल, एक्सटेंशन अन टीमची माहिती.",
+                whyTitle: "आम्ही हे ॲप का बनवलं",
+                whyDesc: "डिपफेक अन सायबर धोके रोखण्यासाठी सुरक्षित सिस्टीमची गरज हुती.",
+                necessityTitle: "आपण वेगळा का शे",
+                necessityDesc: "यात रिॲक्ट, एक्सटेंशन, एआय मॉडेल अन ट्रान्सलेशन लायब्ररी वापरल्या शेत.",
+                techTitle: "प्रगत टेक्नॉलॉजी अन इकोसिस्टम",
+                techSubtitle: "React, AI Models, Extensions अन Libraries द्वारे चालित",
+                teamTitle: "MCA च्या विद्यार्थ्यां द्वारा विकसित",
+                teamSubtitle: "मास्टर ऑफ कंप्यूटर अप्लिकेशन्स टीम",
+                roleLead: "प्रोजेक्ट लीड अन आर्किटेक्ट",
+                descLead: "रिॲक्ट आर्किटेक्चर, न्यूरल सिस्टीम अन संपूर्ण इंटीग्रेशन सांभाळतात, ज्यांच्याशिवाय प्रोजेक्ट बनू शकत नाही.",
+                roleFrontend: "फ्रंटएंड मेकर",
+                descFrontend: "युजर इंटरफेस तयार केला.",
+                roleBackend: "बॅकएंड बिल्डर",
+                descBackend: "डेटा लॉजिक सांभाळले.",
+                roleDeployment: "डिप्लॉयमेंट मॅनेजर",
+                descDeployment: "सर्व्हर होस्टिंग संभाळली.",
+                roleTesting: "टेस्टिंग एक्सपर्ट",
+                descTesting: "बग्स तपासणी केली.",
+                queryTitle: "काही प्रश्न शे का?",
+                queryDesc: "थेट ईमेल पाठवण्यासाठी खालील लिंकवर क्लिक करा:"
+            },
+            gu: {
+                navSubtitle: "ન્યુરલ ડિફેન્સ કોર",
+                navHome: "હોમ હબ",
+                navMatrix: "ઇન્ટેલિજન્સ મેટ્રિક્સ",
+                navDashboard: "ન્યુરલ કંટ્રોલ સેન્ટર",
+                navFeedback: "ટેલિમેટ્રી ફીડબેક",
+                navAbout: "हमारे बारे में",
+                badgeText: "પ્રોજેક્ટ માહિતી અને આર્કિટેक्चर",
+                pageTitle: "સત્યા-નેટ પ્રો વિશે",
+                pageDesc: "રિએક્ટ, એઆઈ મોડેલ, બ્રાઉઝર એક્સટેન્શન અને MCA ટીમ વિશે જાણો.",
+                whyTitle: "અમે આ એપ કેમ બનાવી",
+                whyDesc: "ડિજિટલ યુગમાં જોખમો સામે રક્ષણ મેળવવા માટે સુરક્ષિત સિસ્ટમ બનાવી.",
+                necessityTitle: "અમે અલગ કેમ છીએ",
+                necessityDesc: "અમે રિએક્ટ, એક્સટેન્શન, એઆઈ મોડેલ્સ અને ટ્રાન્સલેશન લાઇબ્રેરી ઇન્ટિગ્રેટ કરી છે.",
+                techTitle: "એડવાન્સ ટેકનોલોજી સ્ટેક અને ઇકોસિસ્ટમ",
+                techSubtitle: "React, AI Models, Extensions અને Libraries દ્વારા સંચાલિત",
+                teamTitle: "MCA વિદ્યાર્થી ટીમ દ્વારા વિકસિત",
+                teamSubtitle: "માસ્ટર ઓફ કોમ્પ્યુટર એપ્લીકેશન ટીમ",
+                roleLead: "પ્રોજેક્ટ લીડ અને આર્કિટેક્ટ",
+                descLead: "રિએક્ટ આર્કિટેक्चर, ન્યુરલ સિસ્ટમ અને ઇન્ટિગ્રેશન હેન્ડલ કરે છે, જેના વગર પ્રોજેક્ટ અધૂરો છે.",
+                roleFrontend: "ફ્રન્ટએન્ડ મેકર",
+                descFrontend: "યુઝર ઇન્ટરફેસ ડિઝાઇન કર્યું.",
+                roleBackend: "બકાએન્ડ બિલ્ડર",
+                descBackend: "ડેટા લોજિક હેન્ડલ કર્યું.",
+                roleDeployment: "ડિપ્લોયમેન્ટ મેનેજર",
+                descDeployment: "ક્લાઉડ હોસ્ટેડ સર્વર સંભાળ્યા.",
+                roleTesting: "ટેસ્ટિંગ અને ક્યુએ",
+                descTesting: "બગ ઓડિટિંગ અને સુરક્ષા તપાસ કરી.",
+                queryTitle: "કોઈ પ્રશ્ન અથવા ફીડબેક છે?",
+                queryDesc: "જો કોઈ પ્રશ્ન હોય તો નીચેની લિંક પર ક્લિક કરીને સીધો ઇમેઇલ મોકલો:"
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        function logout() {
+            localStorage.removeItem('satya_user');
+            window.location.href = 'login.html';
+        }
+
+        function toggleLangDropdown() {
+            document.getElementById('langDropdown').classList.toggle('hidden');
+        }
+
+        function filterLanguages() {
+            let input = document.getElementById('langSearch').value.toLowerCase();
+            let items = document.getElementById('langList').getElementsByTagName('div');
+            for (let i = 0; i < items.length; i++) {
+                let text = items[i].textContent || items[i].innerText;
+                items[i].style.display = text.toLowerCase().indexOf(input) > -1 ? "" : "none";
+            }
+        }
+
+        function setLanguage(langCode) {
+            currentLanguage = langCode;
+            const labels = {
+                'en': 'English',
+                'hi': 'हिंदी (Hindi)',
+                'mr': 'मराठी (Marathi)',
+                'ah': 'अहिराणी (Ahirani)',
+                'gu': 'ગુજરાતી (Gujarati)'
+            };
+            document.getElementById('currentLangLabel').textContent = labels[langCode] || 'English';
+            document.getElementById('langDropdown').classList.add('hidden');
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[langCode] && translations[langCode][key]) {
+                    el.textContent = translations[langCode][key];
+                } else if (translations['en'][key]) {
+                    el.textContent = translations['en'][key];
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Satya-Net Detector",
+  "version": "1.0",
+  "description": "AI and RAG based misinformation and deepfake detector.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

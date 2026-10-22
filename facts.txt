@@ -1,0 +1,31 @@
+Narendra Modi is the Prime Minister of India.
+Emmanuel Macron is the President of France.
+The capital of India is New Delhi.
+The capital of France is Paris.
+Chhatrapati Shivaji Maharaj was born in 1630 at Shivneri Fort.
+Maharashtra is a state in India, and Gujarat is also a state in India.
+नरेन्द्र मोदी भारत के प्रधानमंत्री हैं।
+नरेन्द्र मोदी हे भारताचे पंतप्रधान आहेत.
+छत्रपती शिवाजी महाराज यांचा जन्म १६३० मध्ये शिवनेरी किल्ल्यावर झाला.
+ English: New Delhi is the capital city of India.
+ Hindi: नई दिल्ली भारत की राजधानी है।
+Marathi: नवी दिल्ली ही भारताची राजधानी आहे.
+
+ English: Mumbai is the financial capital of India and capital of Maharashtra.
+  Hindi: मुंबई भारत की वित्तीय राजधानी और महाराष्ट्र की राजधानी है।
+ Marathi: मुंबई ही भारताची आर्थिक राजधानी आणि महाराष्ट्राची राजधानी आहे.
+ English: The Pacific Ocean is the largest and deepest ocean on Earth.
+ Hindi: प्रशांत महासागर पृथ्वी पर सबसे बड़ा और सबसे गहरा महासागर है।
+ Marathi: पॅसिफिक महासागर हा पृथ्वीवरील सर्वात मोठा आणि खोल महासागर आहे.
+
+English: Mount Everest is the highest mountain peak above sea level.
+ Hindi: माउंट एवरेस्ट समुद्र तल से ऊपर सबसे ऊंची पर्वत चोटी है।
+ Marathi: माउंट एव्हरेस्ट हे समुद्रसपाटीपासूनचे जगातील सर्वात उंच पर्वतशिखर आहे.
+
+ English: The Indian Constitution is the longest written constitution of any sovereign country.
+Hindi: भारतीय संविधान किसी भी संप्रभु देश का सबसे लंबा लिखित संविधान है।
+ Marathi: भारतीय संविधान हे कोणत्याही सार्वभौम देशाचे सर्वात मोठे लिखित संविधान आहे.
+
+ English: Chhatrapati Shivaji Maharaj was born at Shivneri Fort.
+Hindi: छत्रपति शिवाजी महाराज का जन्म शिवनेरी किले में हुआ था।
+Marathi: छत्रपती शिवाजी महाराज यांचा जन्म शिवनेरी किल्ल्यावर झाला.

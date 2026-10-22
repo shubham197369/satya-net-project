@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satya-Net Pro | Enterprise Multimodal AI Verification</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#090d16',
+                        cardbg: '#111827'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(rgba(9, 13, 22, 0.90), rgba(9, 13, 22, 0.95)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f3f4f6;
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+    <!-- NAVBAR -->
+    <header class="glass-panel sticky top-0 z-50 border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-600/40">
+                    <i class="fa-solid fa-shield-halved text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-base font-extrabold tracking-wider text-white">SATYA-NET</span>
+                    <span class="block text-[10px] tracking-widest text-indigo-400 font-semibold uppercase">Neural Defense Core</span>
+                </div>
+            </div>
+
+           <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold tracking-wide text-gray-300">
+    <a href="index.html" class="text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-house-chimney text-xs"></i><span>Home Hub</span></a>
+    <a href="matrix.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-microchip text-xs"></i><span>Intelligence Matrix</span></a>
+    <a href="dashboard.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-chart-line text-xs"></i><span>Neural Control Center</span></a>
+    <a href="feedback.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-satellite-dish text-xs"></i><span>Telemetry Feedback</span></a>
+    <a href="about.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-circle-info text-xs"></i><span>About Us</span></a>
+</nav>
+
+            <!-- Actions (Login & Get Started) -->
+            <div class="flex items-center space-x-4">
+                <a href="login.html" class="px-5 py-2.5 text-xs font-bold tracking-wider uppercase bg-gray-800/80 hover:bg-gray-700 text-white rounded-xl border border-gray-700 transition shadow-md">
+                    Access Portal
+                </a>
+                <a href="register.html" class="px-5 py-2.5 text-xs font-bold tracking-wider uppercase bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow-lg shadow-indigo-600/30 transition">
+                    Initialize
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="flex-1 flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto text-center space-y-8">
+            <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold animate-pulse">
+                <i class="fa-solid fa-sparkles"></i>
+                <span>Next-Gen Enterprise Multimodal Intelligence</span>
+            </div>
+            
+            <h1 class="text-4xl sm:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                Detect Deepfakes & Verify Facts with <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-500">Absolute Precision</span>
+            </h1>
+
+            <p class="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto font-normal">
+                An advanced AI-powered platform designed to safeguard your enterprise against fake news, visual deepfakes, and audio spoofing attacks in real-time.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4 pt-4">
+                <a href="dashboard.html" class="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-2xl shadow-xl shadow-indigo-600/30 transition flex items-center justify-center space-x-2">
+                    <span>Launch Neural Dashboard</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="about.html" class="w-full sm:w-auto px-8 py-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 font-semibold rounded-2xl border border-gray-700 transition flex items-center justify-center space-x-2">
+                    <span>Explore Intelligence Matrix</span>
+                </a>
+            </div>
+
+            <!-- Features Grid Preview -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-16 text-left">
+                <div class="glass-panel p-6 rounded-2xl space-y-3 hover:border-indigo-500/50 transition duration-300">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-lg"><i class="fa-solid fa-brain"></i></div>
+                    <h3 class="font-bold text-white text-sm">Text Semantic RAG</h3>
+                    <p class="text-xs text-gray-400">Instantly check claims and misinformation against verified knowledge bases.</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl space-y-3 hover:border-indigo-500/50 transition duration-300">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-lg"><i class="fa-solid fa-image"></i></div>
+                    <h3 class="font-bold text-white text-sm">Visual Deepfake Guard</h3>
+                    <p class="text-xs text-gray-400">Advanced frequency analysis and AI detection for manipulated images.</p>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl space-y-3 hover:border-indigo-500/50 transition duration-300">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-lg"><i class="fa-solid fa-microphone-lines"></i></div>
+                    <h3 class="font-bold text-white text-sm">Audio Spoof Detector</h3>
+                    <p class="text-xs text-gray-400">Detect cloned voices and synthetic audio files with high confidence.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="glass-panel border-t border-gray-800 py-6 text-center text-xs text-gray-500">
+        <p>&copy; 2026 Satya-Net Pro. All rights reserved. Enterprise Security Suite.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligence Matrix | Satya-Net Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { darkbg: '#060913', cardbg: '#0f071c' }
+                }
+            }
+        }
+        // Check if user is logged in
+document.addEventListener("DOMContentLoaded", function() {
+    const isLoggedIn = localStorage.getItem("isLoggedIn");
+    const currentPage = window.location.pathname.split("/").pop();
+    
+    // Agar user logged in nahi hai aur protected page par hai toh login.html par bhej do
+    if (isLoggedIn !== "true" && currentPage !== "login.html" && currentPage !== "register.html") {
+        window.location.href = "login.html";
+    }
+});
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, rgba(8, 4, 18, 0.95), rgba(3, 5, 10, 0.98)), url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f3f4f6;
+        }
+        .purple-glass {
+            background: rgba(18, 8, 32, 0.75);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            box-shadow: 0 0 50px rgba(147, 51, 234, 0.12);
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.3);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(168,85,247,0.5);
+            border-radius: 10px;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.6); }
+        }
+        .pulse-box {
+            animation: pulseGlow 4s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+
+    <!-- NAVBAR -->
+    <header class="purple-glass sticky top-0 z-50 border-b border-purple-900/40">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 rounded-full bg-purple-600/20 border border-purple-400/40 flex items-center justify-center text-purple-300 font-bold shadow-lg shadow-purple-600/30">
+                    <i class="fa-solid fa-shield-halved text-sm"></i>
+                </div>
+                <div>
+                    <span class="text-base font-extrabold tracking-wider text-white">SATYA-NET</span>
+                    <span class="block text-[10px] tracking-widest text-purple-400 font-semibold uppercase" data-i18n="navSubtitle">Neural Defense Core</span>
+                </div>
+            </div>
+
+           <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold tracking-wide text-gray-300">
+    <a href="index.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-house-chimney text-xs"></i><span>Home Hub</span></a>
+    <a href="matrix.html" class="text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-microchip text-xs"></i><span>Intelligence Matrix</span></a>
+    <a href="dashboard.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-chart-line text-xs"></i><span>Neural Control Center</span></a>
+    <a href="feedback.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-satellite-dish text-xs"></i><span>Telemetry Feedback</span></a>
+    <a href="about.html" class="hover:text-purple-400 transition flex items-center space-x-1.5"><i class="fa-solid fa-circle-info text-xs"></i><span>About Us</span></a>
+</nav>
+
+            <div class="flex items-center space-x-4">
+                <!-- MULTILINGUAL DRAWER -->
+                <div class="relative">
+                    <button onclick="toggleLangDropdown()" class="px-4 py-2 text-xs font-semibold bg-purple-950/60 border border-purple-500/30 hover:border-purple-400 text-purple-200 rounded-full flex items-center space-x-2 transition shadow-lg">
+                        <i class="fa-solid fa-globe text-purple-400"></i>
+                        <span id="currentLangLabel">English</span>
+                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                    </button>
+                    <div id="langDropdown" class="hidden absolute right-0 mt-3 w-64 purple-glass rounded-2xl shadow-2xl border border-purple-500/30 p-3 z-50">
+                        <div class="mb-2 px-2 pb-2 border-b border-purple-900/50">
+                            <input type="text" id="langSearch" onkeyup="filterLanguages()" placeholder="Search language..." class="w-full px-3 py-1.5 bg-black/50 border border-purple-500/30 rounded-xl text-xs text-white focus:outline-none focus:border-purple-400">
+                        </div>
+                        <div id="langList" class="max-h-60 overflow-y-auto custom-scroll space-y-1 text-xs text-gray-300">
+                            <div onclick="setLanguage('en')" class="p-2 hover:bg-purple-600/20 rounded-xl cursor-pointer transition">English</div>
+                            <div onclick="setLanguage('hi')" class="p-2 hover:bg-purple-600/20 rounded-xl cursor-pointer transition">हिंदी (Hindi)</div>
+                            <div onclick="setLanguage('mr')" class="p-2 hover:bg-purple-600/20 rounded-xl cursor-pointer transition">मराठी (Marathi)</div>
+                            <div onclick="setLanguage('ah')" class="p-2 hover:bg-purple-600/20 rounded-xl cursor-pointer transition">अहिराणी (Ahirani)</div>
+                            <div onclick="setLanguage('gu')" class="p-2 hover:bg-purple-600/20 rounded-xl cursor-pointer transition">ગુજરાતી (Gujarati)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="logout()" class="px-4 py-2 text-xs font-bold tracking-wider uppercase bg-rose-600/80 hover:bg-rose-600 text-white rounded-full shadow-lg shadow-rose-600/30 transition" data-i18n="btnLogout">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-6 sm:px-8 lg:px-12 py-10 space-y-10">
+        
+        <!-- Header Section -->
+        <div class="purple-glass p-8 rounded-[35px] flex flex-col md:flex-row items-center justify-between gap-6 pulse-box">
+            <div class="space-y-2 text-center md:text-left">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+                    <span data-i18n="matrixBadge">AI Neural Network Architecture & Telemetry Grid</span>
+                </div>
+                <h1 class="text-3xl font-extrabold text-white tracking-tight" data-i18n="matrixTitle">Intelligence Matrix & Threat Nodes</h1>
+                <p class="text-xs text-gray-300 max-w-2xl" data-i18n="matrixDesc">Explore deep learning vectors, real-time telemetry analysis, quantum encryption security grids, and international cyber defense nodes powering Satya-Net Pro.</p>
+            </div>
+            <div class="w-16 h-16 rounded-full bg-purple-500/20 border-2 border-purple-400/50 text-purple-200 flex items-center justify-center text-2xl shadow-[0_0_25px_rgba(168,85,247,0.4)]">
+                <i class="fa-solid fa-microchip"></i>
+            </div>
+        </div>
+
+        <!-- STATS COUNTER BAR -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="purple-glass p-6 rounded-[25px] space-y-2 text-center">
+                <div class="text-2xl font-extrabold text-purple-300">99.98%</div>
+                <div class="text-xs text-gray-400 uppercase tracking-wider" data-i18n="stat1">AI Accuracy Rate</div>
+            </div>
+            <div class="purple-glass p-6 rounded-[25px] space-y-2 text-center">
+                <div class="text-2xl font-extrabold text-emerald-400">14.2 ms</div>
+                <div class="text-xs text-gray-400 uppercase tracking-wider" data-i18n="stat2">Telemetry Latency</div>
+            </div>
+            <div class="purple-glass p-6 rounded-[25px] space-y-2 text-center">
+                <div class="text-2xl font-extrabold text-amber-400">256-Bit</div>
+                <div class="text-xs text-gray-400 uppercase tracking-wider" data-i18n="stat3">Quantum Encryption</div>
+            </div>
+            <div class="purple-glass p-6 rounded-[25px] space-y-2 text-center">
+                <div class="text-2xl font-extrabold text-rose-400">4,892</div>
+                <div class="text-xs text-gray-400 uppercase tracking-wider" data-i18n="stat4">Active Blacklists</div>
+            </div>
+        </div>
+
+        <!-- INTERACTIVE IP THREAT SCANNER WIDGET -->
+        <div class="purple-glass p-8 rounded-[35px] space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-bold text-white tracking-wide" data-i18n="scannerTitle">Live IP & Gateway Threat Inspector</h3>
+                    <p class="text-xs text-gray-400" data-i18n="scannerDesc">Enter any suspicious IP address or domain URL to run a real-time heuristic neural scan.</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="text" id="targetInput" placeholder="e.g., 185.220.101.5 or suspicious-link.xyz" class="flex-1 px-5 py-3.5 bg-black/50 border border-purple-500/30 rounded-2xl text-xs text-white focus:outline-none focus:border-purple-400">
+                <button onclick="runNeuralScan()" class="px-6 py-3.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-2xl transition shadow-lg shadow-purple-600/30 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-radar"></i>
+                    <span data-i18n="scanBtn">Run Neural Scan</span>
+                </button>
+            </div>
+
+            <div id="scanResultBox" class="hidden p-5 rounded-2xl bg-black/60 border border-purple-500/40 space-y-2">
+                <div class="flex items-center justify-between">
+                    <span id="scanStatusText" class="text-xs font-bold text-rose-400">CRITICAL THREAT DETECTED</span>
+                    <span id="scanTimeText" class="text-[10px] text-gray-400">Just now</span>
+                </div>
+                <p id="scanDetailText" class="text-xs text-gray-300">Target IP is flagged in global blacklists for automated phishing and credential harvesting.</p>
+            </div>
+        </div>
+
+        <!-- NEURAL NODES GRID (3 CARDS) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="purple-glass p-6 rounded-[30px] space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <h4 class="text-sm font-bold text-white" data-i18n="node1Title">Deep Transformer Models</h4>
+                <p class="text-xs text-gray-300" data-i18n="node1Desc">Utilizes custom NLP weights to instantly parse fraudulent SMS patterns and voice deepfakes.</p>
+            </div>
+
+            <div class="purple-glass p-6 rounded-[30px] space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center">
+                    <i class="fa-solid fa-shield-virus"></i>
+                </div>
+                <h4 class="text-sm font-bold text-white" data-i18n="node2Title">Zero-Day Sandbox</h4>
+                <p class="text-xs text-gray-300" data-i18n="node2Desc">Executes unknown APKs and malicious payloads in an isolated virtual container to prevent host infection.</p>
+            </div>
+
+            <div class="purple-glass p-6 rounded-[30px] space-y-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-600/20 text-amber-400 flex items-center justify-center">
+                    <i class="fa-solid fa-network-wired"></i>
+                </div>
+                <h4 class="text-sm font-bold text-white" data-i18n="node3Title">Distributed Edge Proxy</h4>
+                <p class="text-xs text-gray-300" data-i18n="node3Desc">Multi-region proxy cluster intercepts telemetry feedback with sub-10ms latency worldwide.</p>
+            </div>
+        </div>
+
+        <!-- LIVE GLOBAL THREAT FEED TABLE -->
+        <div class="purple-glass p-8 rounded-[35px] space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-lg font-bold text-white tracking-wide" data-i18n="tableHeading">Live Global Telemetry Feed</h3>
+                    <p class="text-xs text-gray-400" data-i18n="tableSubHeading">Real-time incoming cyber attack interceptions across international gateways.</p>
+                </div>
+                <span class="px-3 py-1 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-semibold rounded-full flex items-center space-x-1.5 w-fit">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span data-i18n="streamingLive">Streaming Live</span>
+                </span>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-gray-300">
+                    <thead class="border-b border-purple-900/50 text-purple-300 uppercase tracking-wider text-[10px]">
+                        <tr>
+                            <th class="py-3 px-4" data-i18n="thTime">Timestamp</th>
+                            <th class="py-3 px-4" data-i18n="thSource">Source IP / Vector</th>
+                            <th class="py-3 px-4" data-i18n="thAttack">Attack Type</th>
+                            <th class="py-3 px-4" data-i18n="thTarget">Target Region</th>
+                            <th class="py-3 px-4" data-i18n="thStatus">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-purple-900/30">
+                        <tr class="hover:bg-purple-900/10 transition">
+                            <td class="py-3 px-4 text-gray-400 live-time">15:24:12 UTC</td>
+                            <td class="py-3 px-4 font-mono text-purple-200">194.26.29.112</td>
+                            <td class="py-3 px-4 text-rose-400 font-semibold" data-i18n="atk1">Phishing Gateway</td>
+                            <td class="py-3 px-4" data-i18n="reg1">APAC (Mumbai Node)</td>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-md text-[10px]" data-i18n="statNeutralized">Neutralized</span></td>
+                        </tr>
+                        <tr class="hover:bg-purple-900/10 transition">
+                            <td class="py-3 px-4 text-gray-400 live-time">15:23:48 UTC</td>
+                            <td class="py-3 px-4 font-mono text-purple-200">45.154.255.88</td>
+                            <td class="py-3 px-4 text-amber-400 font-semibold" data-i18n="atk2">DDoS Botnet Probe</td>
+                            <td class="py-3 px-4" data-i18n="reg2">EMEA (Frankfurt)</td>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-md text-[10px]" data-i18n="statBlocked">Blocked</span></td>
+                        </tr>
+                        <tr class="hover:bg-purple-900/10 transition">
+                            <td class="py-3 px-4 text-gray-400 live-time">15:22:10 UTC</td>
+                            <td class="py-3 px-4 font-mono text-purple-200">185.220.101.5</td>
+                            <td class="py-3 px-4 text-rose-400 font-semibold" data-i18n="atk3">Credential Harvesting</td>
+                            <td class="py-3 px-4" data-i18n="reg3">AMER (New York)</td>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-md text-[10px]" data-i18n="statNeutralized">Neutralized</span></td>
+                        </tr>
+                        <tr class="hover:bg-purple-900/10 transition">
+                            <td class="py-3 px-4 text-gray-400 live-time">15:20:01 UTC</td>
+                            <td class="py-3 px-4 font-mono text-purple-200">103.21.244.0</td>
+                            <td class="py-3 px-4 text-purple-400 font-semibold" data-i18n="atk4">SQL Injection Vector</td>
+                            <td class="py-3 px-4" data-i18n="reg4">APAC (Singapore)</td>
+                            <td class="py-3 px-4"><span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-md text-[10px]" data-i18n="statBlocked">Blocked</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- QUANTUM ENCRYPTION PROTOCOLS & SERVER HEALTH -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="purple-glass p-6 rounded-[30px] space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center">
+                        <i class="fa-solid fa-lock text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-white" data-i18n="qkdTitle">Quantum Key Distribution (QKD)</h4>
+                        <p class="text-[10px] text-purple-400" data-i18n="qkdSub">Active Encryption Layer</p>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-300" data-i18n="qkdDesc">Ensures un-hackable data transmission across central command nodes using photon polarization states.</p>
+                <div class="w-full bg-black/50 h-2 rounded-full overflow-hidden border border-purple-500/20">
+                    <div class="bg-purple-500 h-full w-[99.8%] animate-pulse"></div>
+                </div>
+            </div>
+
+            <div class="purple-glass p-6 rounded-[30px] space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center">
+                        <i class="fa-solid fa-server text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-bold text-white" data-i18n="syncTitle">Neural Cluster Synchronization</h4>
+                        <p class="text-[10px] text-indigo-400" data-i18n="syncSub">Sub-node Health: Optimal</p>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-300" data-i18n="syncDesc">Automatic failover mechanisms redirect traffic in case of regional edge disruptions.</p>
+                <div class="w-full bg-black/50 h-2 rounded-full overflow-hidden border border-indigo-500/20">
+                    <div class="bg-indigo-500 h-full w-[94.5%]"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADDITIONAL ADVANCED KERNEL LOGS SECTION -->
+        <div class="purple-glass p-8 rounded-[35px] space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-white tracking-wide" data-i18n="kernelTitle">Kernel Diagnostics & Neural Log Stream</h3>
+                <span class="text-[10px] text-purple-400 font-mono">SYS_VER: 4.8.2-PRO</span>
+            </div>
+            <div id="kernelLogBox" class="bg-black/70 p-4 rounded-2xl border border-purple-500/30 font-mono text-[11px] text-purple-300 space-y-1.5 max-h-40 overflow-y-auto custom-scroll">
+                <div>[15:26:01] [KERNEL] Initializing tensor memory blocks for active node verification... [OK]</div>
+                <div>[15:26:05] [SECURITY] Quantum handshake verified with APAC primary proxy cluster.</div>
+                <div>[15:26:12] [TELEMETRY] Incoming payload intercepted from 194.26.29.112. Executing sandbox analysis.</div>
+                <div>[15:26:14] [AI_ENGINE] Threat classified as phishing vector. Blacklist rule #884 applied automatically.</div>
+                <div>[15:26:20] [SYSTEM] All regional edge proxies operating at peak throughput. No latency spikes detected.</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="purple-glass border-t border-purple-900/40 py-6 text-center text-xs text-gray-400 mt-12">
+        <p data-i18n="footerText">&copy; 2026 Satya-Net Pro. Intelligence Matrix Core & Telemetry Grid.</p>
+    </footer>
+
+    <!-- SCRIPT FOR TRANSLATION, SCANNER & DYNAMIC CLOCK -->
+    <script>
+        const translations = {
+            en: {
+                navSubtitle: "Neural Defense Core",
+                navHome: "Home Hub",
+                navMatrix: "Intelligence Matrix",
+                navDashboard: "Neural Control Center",
+                navFeedback: "Telemetry Feedback",
+                btnLogout: "Logout",
+                matrixBadge: "AI Neural Network Architecture & Telemetry Grid",
+                matrixTitle: "Intelligence Matrix & Threat Nodes",
+                matrixDesc: "Explore deep learning vectors, real-time telemetry analysis, quantum encryption security grids, and international cyber defense nodes powering Satya-Net Pro.",
+                stat1: "AI Accuracy Rate",
+                stat2: "Telemetry Latency",
+                stat3: "Quantum Encryption",
+                stat4: "Active Blacklists",
+                scannerTitle: "Live IP & Gateway Threat Inspector",
+                scannerDesc: "Enter any suspicious IP address or domain URL to run a real-time heuristic neural scan.",
+                scanBtn: "Run Neural Scan",
+                node1Title: "Deep Transformer Models",
+                node1Desc: "Utilizes custom NLP weights to instantly parse fraudulent SMS patterns and voice deepfakes.",
+                node2Title: "Zero-Day Sandbox",
+                node2Desc: "Executes unknown APKs and malicious payloads in an isolated virtual container to prevent host infection.",
+                node3Title: "Distributed Edge Proxy",
+                node3Desc: "Multi-region proxy cluster intercepts telemetry feedback with sub-10ms latency worldwide.",
+                tableHeading: "Live Global Telemetry Feed",
+                tableSubHeading: "Real-time incoming cyber attack interceptions across international gateways.",
+                streamingLive: "Streaming Live",
+                thTime: "Timestamp",
+                thSource: "Source IP / Vector",
+                thAttack: "Attack Type",
+                thTarget: "Target Region",
+                thStatus: "Status",
+                atk1: "Phishing Gateway",
+                atk2: "DDoS Botnet Probe",
+                atk3: "Credential Harvesting",
+                atk4: "SQL Injection Vector",
+                reg1: "APAC (Mumbai Node)",
+                reg2: "EMEA (Frankfurt)",
+                reg3: "AMER (New York)",
+                reg4: "APAC (Singapore)",
+                statNeutralized: "Neutralized",
+                statBlocked: "Blocked",
+                qkdTitle: "Quantum Key Distribution (QKD)",
+                qkdSub: "Active Encryption Layer",
+                qkdDesc: "Ensures un-hackable data transmission across central command nodes using photon polarization states.",
+                syncTitle: "Neural Cluster Synchronization",
+                syncSub: "Sub-node Health: Optimal",
+                syncDesc: "Automatic failover mechanisms redirect traffic in case of regional edge disruptions.",
+                kernelTitle: "Kernel Diagnostics & Neural Log Stream",
+                footerText: "&copy; 2026 Satya-Net Pro. Intelligence Matrix Core & Telemetry Grid."
+            },
+            hi: {
+                navSubtitle: "न्यूरल डिफेंस कोर",
+                navHome: "होम हब",
+                navMatrix: "इंटेलिजेंस मैट्रिक्स",
+                navDashboard: "न्यूरल कंट्रोल सेंटर",
+                navFeedback: "टेलीमेट्री फीडबैक",
+                btnLogout: "लॉग आउट",
+                matrixBadge: "AI न्यूरल नेटवर्क आर्किटेक्चर और टेलीमेट्री ग्रिड",
+                matrixTitle: "इंटेलिजेंस मैट्रिक्स और थ्रेट नोट्स",
+                matrixDesc: "सत्य-नेट प्रो को पावर देने वाले डीप लर्निंग वेक्टर्स, रीयल-टाइम टेलीमेट्री और क्वांटम एन्क्रिप्शन ग्रिड का अन्वेषण करें।",
+                stat1: "AI सटीकता दर",
+                stat2: "टेलीमेट्री विलंबता",
+                stat3: "क्वांटम एन्क्रिप्शन",
+                stat4: "सक्रिय ब्लैकलिस्ट",
+                scannerTitle: "लाइव IP और गेटवे थ्रेट इंस्पेक्टर",
+                scannerDesc: "रीयल-टाइम न्यूरल स्कैन चलाने के लिए कोई भी संदिग्ध IP पता या डोमेन URL दर्ज करें।",
+                scanBtn: "न्यूरल स्कैन चलाएं",
+                node1Title: "दीप ट्रांसफॉर्मर मॉडल",
+                node1Desc: "धोखाधड़ी वाले एसएमएस पैटर्न और वॉयस डीपफेक को तुरंत पार्स करने के लिए कस्टम NLP वेट का उपयोग करता है।",
+                node2Title: "जीरो-डे सैंडबॉक्स",
+                node2Desc: "होस्ट संक्रमण को रोकने के लिए अज्ञात APK और पेलोड को एक अलग वर्चुअल कंटेनर में निष्पादित करता है।",
+                node3Title: "डिस्ट्रीब्यूटेड एज प्रॉक्सी",
+                node3Desc: "मल्टी-क्षेत्रीय प्रॉक्सी क्लस्टर दुनिया भर में सब-10ms विलंबता के साथ टेलीमेट्री फीडबैक को रोकता है।",
+                tableHeading: "लाइव ग्लोबल टेलीमेट्री फीड",
+                tableSubHeading: "अंतर्राष्ट्रीय गेटवे पर रीयल-टाइम इनकमिंग साइबर अटैक इंटरसेप्शन।",
+                streamingLive: "लाइव स्ट्रीमिंग",
+                thTime: "समय मुद्रा",
+                thSource: "स्रोत IP / वेक्टर",
+                thAttack: "हमले का प्रकार",
+                thTarget: "लक्ष्य क्षेत्र",
+                thStatus: "स्थिति",
+                atk1: "फ़िशिंग गेटवे",
+                atk2: "DDoS बॉटनेट प्रोब",
+                atk3: "क्रेडेंशियल हार्वेस्टिंग",
+                atk4: "SQL इंजेक्शन वेक्टर",
+                reg1: "APAC (मुंबई नोड)",
+                reg2: "EMEA (फ्रैंकफर्ट)",
+                reg3: "AMER (न्यू यॉर्क)",
+                reg4: "APAC (सिंगापुर)",
+                statNeutralized: "नष्ट किया गया",
+                statBlocked: "अवरुद्ध",
+                qkdTitle: "क्वांटम कुंजी वितरण (QKD)",
+                qkdSub: "सक्रिय एन्क्रिप्शन परत",
+                qkdDesc: "फोटॉन ध्रुवीकरण अवस्थाओं का उपयोग करके केंद्रीय कमांड नोड्स पर सुरक्षित डेटा传输 सुनिश्चित करता है।",
+                syncTitle: "न्यूरल क्लस्टर सिंक्रनाइज़ेशन",
+                syncSub: "सब-नोड स्वास्थ्य: इष्टतम",
+                syncDesc: "क्षेत्रीय व्यवधान के मामले में स्वचालित फ़ेओवर तंत्र ट्रैफ़िक को पुनर्निर्देशित करता है।",
+                kernelTitle: "कर्नेल डायग्नोस्टिक्स और न्यूरल लॉग स्ट्रीम",
+                footerText: "&copy; 2026 सत्य-नेट प्रो. इंटेलिजेंस मैट्रिक्स कोर और टेलीमेट्री ग्रिड।"
+            },
+            mr: {
+                navSubtitle: "न्यूरल डिफेन्स कोर",
+                navHome: "होम हब",
+                navMatrix: "इन्टेलिजन्स मॅट्रिक्स",
+                navDashboard: "न्यूरल कंट्रोल सेंटर",
+                navFeedback: "टेलिमेट्री फीडबॅक",
+                btnLogout: "लॉग आउट",
+                matrixBadge: "AI न्यूरल नेटवर्क आर्किटेक्चर आणि टेलिमेट्री ग्रीड",
+                matrixTitle: "इन्टेलिजन्स मॅट्रिक्स आणि थ्रेट नोट्स",
+                matrixDesc: "सत्य-नेट प्रो ला पावर देणारे डीप लर्निंग व्हेक्टर्स, रिअल-टाइम टेलिमेट्री आणि क्वांटम एन्क्रिप्शन ग्रीड तपासा.",
+                stat1: "AI अचूकता दर",
+                stat2: "टेलिमेट्री लेटन्सी",
+                stat3: "क्वांटम एन्क्रिप्शन",
+                stat4: "सक्रिय ब्लॅकलिस्ट",
+                scannerTitle: "लाइव IP आणि गेटवे थ्रेट इन्स्पेक्टर",
+                scannerDesc: "रिअल-टाइम न्यूरल स्कॅन करण्यासाठी कोणताही संशयास्पद IP किंवा URL प्रविष्ट करा.",
+                scanBtn: "न्यूरल स्कॅन चालवा",
+                node1Title: "दीप ट्रान्सफॉर्मर मॉडेल",
+                node1Desc: "फसव्या एसएमएस पॅटर्न्स आणि व्हॉइस डिपफेक ओळखण्यासाठी कस्टमाइझ्ड NLP मॉडेल वापरते.",
+                node2Title: "झिरो-डे सैंडबॉक्स",
+                node2Desc: "संशयित ॲप्स आणि मालवेअर एका सुरक्षित व्हर्च्युअल कंटेनरमध्ये तपासतो.",
+                node3Title: "डिस्ट्रीब्यूटेड एज प्रॉक्सी",
+                node3Desc: "जागतिक स्तरावर हाय-स्पीड टेलिमेट्री मॉनिटरिंग सुनिश्चित करतो.",
+                tableHeading: "लाइव ग्लोबल टेलिमेट्री फीड",
+                tableSubHeading: "आंतरराष्ट्रीय गेटवेवर रिअल-टाइम इनकमिंग सायबर हल्ले व ट्रॅफिक इंटरसेप्शन.",
+                streamingLive: "लाइव सुरू आहे",
+                thTime: "वेळ मुद्रा",
+                thSource: "स्रोत IP / वेक्टर",
+                thAttack: "हल्ल्याचा प्रकार",
+                thTarget: "लक्ष्य क्षेत्र",
+                thStatus: "स्थिती",
+                atk1: "फिशिंग गेटवे",
+                atk2: "DDoS बॉटनेट प्रोब",
+                atk3: "क्रेडेंशियल हार्वेस्टिंग",
+                atk4: "SQL इंजेक्शन वेक्टर",
+                reg1: "APAC (मुंबई नोड)",
+                reg2: "EMEA (फ्रँकफर्ट)",
+                reg3: "AMER (न्यूयॉर्क)",
+                reg4: "APAC (सिंगापूर)",
+                statNeutralized: "निष्क्रिय केले",
+                statBlocked: "ब्लॉक केले",
+                qkdTitle: "क्वांटम की डिस्ट्रीब्यूशन (QKD)",
+                qkdSub: "सक्रिय एन्क्रिप्शन थर",
+                qkdDesc: "फोटॉन पोलारायझेशन स्टेट्स वापरून सेंट्रल कमांड नोड्सवर सुरक्षित डेटा ट्रान्समिशन सुनिश्चित करते.",
+                syncTitle: "न्यूरल क्लस्टर सिंक्रोनाइझेशन",
+                syncSub: "सब-नोड आरोग्य: उत्तम",
+                syncDesc: "प्रादेशिक व्यत्यय आल्यास आपोआप फेलओव्हर मेकॅनिझम ट्रॅफिक पुनर्निर्देशित करते.",
+                kernelTitle: "कर्नल डायग्नोस्टिक्स आणि न्यूरल लॉग स्ट्रीम",
+                footerText: "&copy; 2026 सत्य-नेट प्रो. इन्टेलिजन्स मॅट्रिक्स कोर आणि टेलिमेट्री ग्रीड."
+            },
+            ah: {
+                navSubtitle: "न्यूरल डिफेन्स कोर",
+                navHome: "होम हब",
+                navMatrix: "इन्टेलिजन्स मॅट्रिक्स",
+                navDashboard: "न्यूरल कंट्रोल सेंटर",
+                navFeedback: "टेलिमेट्री फीडबॅक",
+                btnLogout: "लॉग आऊट",
+                matrixBadge: "AI न्यूरल नेटवर्क अन टेलिमेट्री",
+                matrixTitle: "इन्टेलिजन्स मॅट्रिक्स",
+                matrixDesc: "सत्य-नेट प्रो च्या सुरक्षा प्रणाली अन AI नोड्स ची माहिती इथे शे.",
+                stat1: "AI अचूकता प्रमाण",
+                stat2: "टेलिमेट्री लेटन्सी",
+                stat3: "क्वांटम एन्क्रिप्शन",
+                stat4: "सक्रिय ब्लॅकलिस्ट",
+                scannerTitle: "लाईव्ह IP अन थ्रेट तपासणी",
+                scannerDesc: "कुठे बी शंकास्पद IP किंवा URL टाका अन स्कॅन करा.",
+                scanBtn: "न्यूरल स्कॅन करा",
+                node1Title: "डीप ट्रान्सफॉर्मर मॉडेल",
+                node1Desc: "खोटे मेसेज अन आवाज ओळखण्यासाठी AI चा वापर.",
+                node2Title: "झिरो-डे सैंडबॉक्स",
+                node2Desc: "व्हायरल ॲप्स अन मालवेअर सुरक्षितपणे तपासणे.",
+                node3Title: "डिस्ट्रीब्यूटेड एज प्रॉक्सी",
+                node3Desc: "जलद गतीने नेटवर्क मॉनिटरिंग करणे.",
+                tableHeading: "लाईव्ह ग्लोबल टेलिमेट्री फीड",
+                tableSubHeading: "आंतरराष्ट्रीय स्तरावर येणारे सायबर हल्ले अन ट्रॅफिक.",
+                streamingLive: "लाईव्ह चालू शे",
+                thTime: "वेळ",
+                thSource: "स्रोत IP / वेक्टर",
+                thAttack: "हल्ल्याचा प्रकार",
+                thTarget: "लक्ष्य क्षेत्र",
+                thStatus: "स्थिती",
+                atk1: "फिशिंग गेटवे",
+                atk2: "DDoS बॉटनेट प्रोब",
+                atk3: "क्रेडेंशियल हार्वेस्टिंग",
+                atk4: "SQL इंजेक्शन वेक्टर",
+                reg1: "APAC (मुंबई नोड)",
+                reg2: "EMEA (फ्रँकफर्ट)",
+                reg3: "AMER (न्यूयॉर्क)",
+                reg4: "APAC (सिंगापूर)",
+                statNeutralized: "नष्ट केले",
+                statBlocked: "अडकवले",
+                qkdTitle: "क्वांटम की डिस्ट्रीब्यूशन (QKD)",
+                qkdSub: "सुरक्षा स्तर",
+                qkdDesc: "सुरक्षित डेटा ट्रान्समिशनसाठी क्वांटम तंत्रज्ञानाचा वापर.",
+                syncTitle: "न्यूरल क्लस्टर सिंक्रोनाइझेशन",
+                syncSub: "सिस्टम आरोग्य: उत्तम",
+                syncDesc: "आपत्कालीन परिस्थितीत ट्रॅफिक ऑटोमॅटिक डायव्हर्ट होते.",
+                kernelTitle: "कर्नेल डायग्नोस्टिक्स अन लॉग",
+                footerText: "&copy; 2026 सत्य-नेट प्रो. इन्टेलिजन्स मॅट्रिक्स कोर."
+            },
+            gu: {
+                navSubtitle: "ન્યુરલ ડિફેન્સ કોર",
+                navHome: "હોમ હબ",
+                navMatrix: "ઇન્ટેલિજન્સ મેટ્રિક્સ",
+                navDashboard: "ન્યુરલ કંટ્રોલ સેન્ટર",
+                navFeedback: "ટેલિમેટ્રી ફીડબેક",
+                btnLogout: "લોગ આウト",
+                matrixBadge: "AI ન્યુરલ નેટવર્ક આર્કિટેક્ચર અને ટેલિમેટ્રી ગ્રીડ",
+                matrixTitle: "ઇન્ટેલિજન્સ મેટ્રિક્સ અને થ્રેટ નોડ્સ",
+                matrixDesc: "સત્ય-નેટ પ્રો ને પાવર આપતા ડીપ લર્નિંગ વેક્ટર્સ, રિયલ-ટાઇમ ટેલિમેટ્રી અને ક્વોન્ટમ એન્ક્રિપ્શન ગ્રીડ તપાસો.",
+                stat1: "AI સચોટતા દર",
+                stat2: "ટેલિમેટ્રી લેટન્સી",
+                stat3: "ક્વોન્ટમ એન્ક્રિપ્શન",
+                stat4: "સક્રિય બ્્લેકલિસ્ટ",
+                scannerTitle: "લાઈવ IP અને ગેટવે થ્રેટ ઇન્સ્પેક્ટર",
+                scannerDesc: "રિયલ-ટાઇમ ન્યુરલ સ્કેન ચલાવવા માટે શંકાસ્પદ IP સરનામું અથવા URL દાખલ કરો.",
+                scanBtn: "ન્યુરલ સ્કેન ચલાવો",
+                node1Title: "ડીપ ટ્રાન્સફોર્મર મોડેલ",
+                node1Desc: "છેતરપિંડીવાળા SMS પેટર્ન અને વોઈસ ડીપફેકને તરત પારખવા માટે NLP નો ઉપયોગ કરે છે.",
+                node2Title: "ઝીરો-ડે સેન્ડબોક્સ",
+                node2Desc: "અજ્ઞાત APK અને પેલોડ્સને અલગ વર્ચ્યુઅલ કન્ટેનરમાં ચકાસે છે.",
+                node3Title: "ડિસ્ટ્રિબ્યુટેડ એજ પ્રોક્સી",
+                node3Desc: "વિશ્વભરમાં હાઇ-સ્પીડ ટેલિમેટ્રી મોનિટરિંગ સુનિશ્ચિત કરે છે.",
+                tableHeading: "લાઈવ ગ્લોબલ ટેલિમેટ્રી ફીડ",
+                tableSubHeading: "અંતરરાષ્ટ્રીય ગેટવે પર રિયલ-ટાઇમ સાયબર હુમલા અને ટ્રાફિક ઇન્ટરસેપ્શન.",
+                streamingLive: "લાઈવ સ્ટ્રીમિંગ",
+                thTime: "સમય મહોর",
+                thSource: "સ્રોત IP / વેક્ટર",
+                thAttack: "હુમલાનો પ્રકાર",
+                thTarget: "લક્ષ્ય પ્રદેશ",
+                thStatus: "સ્થિતિ",
+                atk1: "ફિશિંગ ગેટવે",
+                atk2: "DDoS બોટનેટ પ્રોબ",
+                atk3: "ક્રેડેન્શિયલ હાર્વેસ્ટિંગ",
+                atk4: "SQL ઇન્જેક્શન વેક્ટર",
+                reg1: "APAC (મુંબઈ નોડ)",
+                reg2: "EMEA (ફ્રેंकफर्ट)",
+                reg3: "AMER (ન્યૂ યોર્ક)",
+                reg4: "APAC (સિંગાપોર)",
+                statNeutralized: "નાશ કર્યો",
+                statBlocked: "બ્લોક કર્યું",
+                qkdTitle: "ક્વોન્ટમ કી ડિસ્ટ્રિબ્યુશન (QKD)",
+                qkdSub: "સક્રિય એન્ક્રિપ્શન સ્તર",
+                qkdDesc: "ફોટોન પોલરાઇઝેશન સ્ટેટ્સનો ઉપયોગ કરીને સેન્ટ્રલ કમાન્ડ નોડ્સ પર સુરક્ષિત ડેટા ટ્રાન્સમિશન સુનિશ્ચિત કરે છે.",
+                syncTitle: "ન્યુરલ ક્લસ્ટર સિન્ક્રોનાઇઝેશન",
+                syncSub: "સબ-નોડ આરોગ્ય: શ્રેષ્ઠ",
+                syncDesc: "પ્રાદેશિક વિક્ષેપના કિસ્સામાં સ્વચાલિત ફેલઓવર મિકેનિઝમ ટ્રાફિકને રીડायरेक्ट કરે છે.",
+                kernelTitle: "કર્नेल ડાયગ્‍નોસ્ટિક્સ અને ન્યુરલ લોગ સ્ટ્રીम",
+                footerText: "&copy; 2026 સત્ય-નેટ પ્રો. ઇન્ટેલિજન્સ મેટ્રિક્સ કોર અને ટેલિમેટ્રી ગ્રીડ."
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        function logout() {
+            localStorage.removeItem('satya_user');
+            window.location.href = 'login.html';
+        }
+
+        function toggleLangDropdown() {
+            document.getElementById('langDropdown').classList.toggle('hidden');
+        }
+
+        function setLanguage(langCode) {
+            currentLanguage = langCode;
+            const labels = { 'en': 'English', 'hi': 'हिंदी (Hindi)', 'mr': 'मराठी (Marathi)', 'ah': 'अहिराणी (Ahirani)', 'gu': 'ગુજરાતી (Gujarati)' };
+            document.getElementById('currentLangLabel').textContent = labels[langCode] || 'English';
+            document.getElementById('langDropdown').classList.add('hidden');
+
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[langCode] && translations[langCode][key]) {
+                    el.innerHTML = translations[langCode][key];
+                } else if (translations['en'][key]) {
+                    el.innerHTML = translations['en'][key];
+                }
+            });
+        }
+
+        function runNeuralScan() {
+            const inputVal = document.getElementById('targetInput').value.trim();
+            const resultBox = document.getElementById('scanResultBox');
+            if(!inputVal) {
+                alert('Please enter an IP address or URL to scan.');
+                return;
+            }
+            resultBox.classList.remove('hidden');
+            document.getElementById('scanStatusText').textContent = "⚠️️ MALICIOUS SIGNATURE MATCHED";
+            document.getElementById('scanDetailText').textContent = `Target '${inputVal}' is associated with malicious botnet telemetry. Sandbox isolation triggered.`;
+        }
+
+        // DYNAMIC REAL-TIME TIMESTAMP GENERATOR FOR LIVE EFFECT
+        function updateLiveTimestamps() {
+            const now = new Date();
+            const hours = String(now.getUTCHours()).padStart(2, '0');
+            const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+            const currentTimeStr = `${hours}:${minutes}:${seconds} UTC`;
+
+            // Update time elements
+            const timeElements = document.querySelectorAll('.live-time');
+            if(timeElements.length > 0) {
+                // Slightly offset past items for realism
+                now.setSeconds(now.getSeconds() - 2);
+                timeElements[0].textContent = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}:${String(now.getUTCSeconds()).padStart(2, '0')} UTC`;
+                
+                now.setSeconds(now.getSeconds() - 5);
+                timeElements[1].textContent = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}:${String(now.getUTCSeconds()).padStart(2, '0')} UTC`;
+                
+                now.setSeconds(now.getSeconds() - 4);
+                timeElements[2].textContent = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}:${String(now.getUTCSeconds()).padStart(2, '0')} UTC`;
+                
+                now.setSeconds(now.getSeconds() - 6);
+                timeElements[3].textContent = `${String(now.getUTCHours()).padStart(2, '0')}:${String(now.getUTCMinutes()).padStart(2, '0')}:${String(now.getUTCSeconds()).padStart(2, '0')} UTC`;
+            }
+        }
+
+        // Run every 3 seconds to keep it dynamic and live
+        setInterval(updateLiveTimestamps, 3000);
+    </script>
+</body>
+</html>
