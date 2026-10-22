@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
             resultDiv.innerHTML = "Checking with AI RAG Engine...";
 
             try {
-                const response = await fetch('http://127.0.0.1:8000/verify-claim', {
+                // FIXED: Using relative path '/verify-claim' instead of hardcoded 'http://127.0.0.1:8000/verify-claim'
+                const response = await fetch('/verify-claim', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text: text })
@@ -95,7 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
             resultDiv.innerHTML = "Analyzing image and checking deepfakes...";
             
             try {
-                const response = await fetch('http://127.0.0.1:8000/verify-image', {
+                // FIXED: Using relative path '/verify-image' instead of hardcoded 'http://127.0.0.1:8000/verify-image'
+                const response = await fetch('/verify-image', {
                     method: 'POST',
                     body: formData
                 });
@@ -128,7 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
             resultDiv.innerHTML = "Analyzing audio voice clip for deepfakes...";
             
             try {
-                const response = await fetch('http://127.0.0.1:8000/verify-audio', {
+                // FIXED: Using relative path '/verify-audio' instead of hardcoded 'http://127.0.0.1:8000/verify-audio'
+                const response = await fetch('/verify-audio', {
                     method: 'POST',
                     body: formData
                 });

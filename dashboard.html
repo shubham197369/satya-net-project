@@ -358,7 +358,7 @@
 
     </main>
 
-    <!-- SETTINGS MODAL / DRAWER (Updated with Dark/Light Toggle, Password Fields, and Login Info) -->
+    <!-- SETTINGS MODAL / DRAWER -->
     <div id="settingsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
         <div class="purple-glass w-full max-w-md p-6 rounded-[30px] border border-purple-500/40 space-y-6 shadow-2xl relative animate-in fade-in zoom-in duration-200">
             <div class="flex items-center justify-between border-b border-purple-900/60 pb-4">
@@ -421,7 +421,8 @@
 
                 <div class="space-y-1.5">
                     <label class="text-gray-300 font-semibold block">API Gateway Endpoint</label>
-                    <input type="text" id="settingApiUrl" value="http://127.0.0.1:8000" class="w-full px-3.5 py-2 bg-black/60 border border-purple-500/30 rounded-xl text-white focus:outline-none focus:border-purple-400 text-xs">
+                    <!-- FIXED: Relative path default -->
+                    <input type="text" id="settingApiUrl" value="" placeholder="Leave empty for relative path" class="w-full px-3.5 py-2 bg-black/60 border border-purple-500/30 rounded-xl text-white focus:outline-none focus:border-purple-400 text-xs">
                 </div>
             </div>
 
@@ -821,7 +822,9 @@
             logTerminal(`[VERIFY] Sending text snippet to FastAPI backend...`);
 
             try {
-                const apiUrl = localStorage.getItem('satya_api') || 'http://127.0.0.1:8000';
+                // FIXED: Using relative path '' or stored settings API URL
+                const customApi = localStorage.getItem('satya_api');
+                const apiUrl = (customApi && customApi !== '') ? customApi : '';
                 const response = await fetch(`${apiUrl}/verify-claim`, {
                     method: 'POST',
                     headers: {
@@ -845,7 +848,7 @@
             } catch (error) {
                 riskBadge.className = "px-2.5 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
                 riskBadge.textContent = "CONNECTION ERROR";
-                resultDesc.textContent = "Backend server se connect nahi ho pa raha hai. Kripya check karein ki main.py chal raha hai ya nahi.";
+                resultDesc.textContent = "Backend server se connect nahi हो pa raha hai. Kripya check karein.";
                 logTerminal(`[ERROR] Failed to reach FastAPI backend: ${error.message}`);
             }
         }
@@ -919,4 +922,4 @@
         });
     </script>
 </body>
-</html>.
+</html>

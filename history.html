@@ -40,7 +40,8 @@
         // Backend se history fetch karne ka function
         async function loadHistory() {
             try {
-                let response = await fetch('http://127.0.0.1:8000/api/history');
+                // FIXED: Using relative path '' instead of hardcoded 'http://127.0.0.1:8000'
+                let response = await fetch('/api/history');
                 let data = await response.json();
                 let container = document.getElementById('history-container');
                 
@@ -70,7 +71,8 @@
         async function clearHistoryLogs() {
             if(confirm("Kya aap apni saari history delete karna chahte hain?")) {
                 try {
-                    await fetch('http://127.0.0.1:8000/api/history/clear', { method: 'DELETE' });
+                    // FIXED: Using relative path '' instead of hardcoded 'http://127.0.0.1:8000'
+                    await fetch('/api/history/clear', { method: 'DELETE' });
                     loadHistory();
                 } catch(err) {
                     alert("History clear karne me error aaya.");
