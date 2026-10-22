@@ -88,7 +88,7 @@ def load_facts_automatically():
     else:
         print("Warning: facts.txt file not found!")
 
-load_facts_automatically()
+#load_facts_automatically()
 
 def analyze_image_visually(image_path):
     img = cv2.imread(image_path)
