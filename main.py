@@ -184,7 +184,7 @@ def verify_claim(data: ClaimRequest):
         if api_key:
             try:
                 model = genai.GenerativeModel(
-                    model_name="gemini-2.5-flash",
+                    model_name="gemini-3.6-flash",
                     generation_config={"response_mime_type": "application/json"}
                 )
                 prompt = (
