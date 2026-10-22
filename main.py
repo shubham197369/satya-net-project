@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.responses import ORJSONResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 import chromadb
 from sentence_transformers import SentenceTransformer
 import os
@@ -29,7 +30,7 @@ def get_ai_help(error_message: str):
     if not api_key:
         return "AI Error Helper inactive hai kyunki GEMINI_API_KEY set nahi hai."
     try:
-        model = genai.GenerativeModel("gemini-3.6-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
         prompt = f"Yeh Python/FastAPI code mein error aaya hai, isko theek karne ka simple aur accurate solution batao: {error_message}"
         response = model.generate_content(prompt)
         return response.text
@@ -148,7 +149,7 @@ class FeedbackRequest(BaseModel):
     message: str
 
 
-@app.get("/")
+@app.get("/api/status")
 def home():
     return {"status": "Satya-Net Multimodal RAG Engine is Active & Ready!"}
 
@@ -175,7 +176,7 @@ def reset_password(data: PasswordReset):
     return {"status": "success", "message": "Password updated successfully!"}
 
 
-# --- CLAIM VERIFICATION ENDPOINT (Updated with Gemini API Intelligence & Clean JSON Parsing) ---
+# --- CLAIM VERIFICATION ENDPOINT ---
 @app.post("/verify-claim")
 @app.post("/api/analyze")
 def verify_claim(data: ClaimRequest):
@@ -187,7 +188,6 @@ def verify_claim(data: ClaimRequest):
         
         if api_key:
             try:
-                # Updated model name to gemini-3.6-flash and JSON configuration
                 model = genai.GenerativeModel(
                     model_name="gemini-3.6-flash",
                     generation_config={"response_mime_type": "application/json"}
@@ -200,7 +200,6 @@ def verify_claim(data: ClaimRequest):
                 )
                 response = model.generate_content(prompt)
                 
-                # Safely parse JSON response so UI shows clean formatted explanation instead of raw string
                 try:
                     parsed_ai_data = json.loads(response.text)
                     verdict = parsed_ai_data.get("verdict", "Analyzed by Gemini AI")
@@ -216,7 +215,6 @@ def verify_claim(data: ClaimRequest):
             verdict = "API Key Missing"
             explanation = "Gemini API key .env mein configured nahi hai."
 
-        # Save to history log
         history_db.append({"type": "Text Claim", "query": query_text[:60] + "...", "verdict": verdict})
 
         return {
@@ -359,6 +357,11 @@ def clear_history():
 def submit_feedback(feedback: FeedbackRequest):
     feedback_db.append(feedback.dict())
     return {"status": "success", "message": "Feedback received successfully. Thank you!"}
+
+
+# --- SERVE FRONTEND STATIC FILES (Fixes 404 Error for HTML Pages) ---
+app.mount("/", StaticFiles(directory=".", html=True), name="static")
+
 
 if __name__ == "__main__":
     import uvicorn
